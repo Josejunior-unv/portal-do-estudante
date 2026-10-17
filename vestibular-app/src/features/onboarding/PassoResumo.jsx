@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/features/auth/useAuth";
+import { salvarCronograma } from "@/features/onboarding/cronogramaService";
 import OnboardingLayout from "@/features/onboarding/OnboardingLayout";
 
 export default function PassoResumo({ cronograma, onBack, onSaveSuccess }) {
+  const { userId } = useAuth();
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
   const lista = Array.isArray(cronograma) ? cronograma : [];
@@ -15,22 +17,9 @@ export default function PassoResumo({ cronograma, onBack, onSaveSuccess }) {
     setSalvando(true);
     setErro("");
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não encontrado. Faça login novamente.");
-
-      const { error } = await supabase.from("cronogramas").upsert(
-        {
-          user_id: user.id,
-          dados_cronograma: lista,
-          updated_at: new Date(),
-        },
-        { onConflict: "user_id" },
-      );
-      if (error) throw error;
-
-      onSaveSuccess();
+      if (!userId) throw new Error("Usuário não encontrado. Faça login novamente.");
+      await salvarCronograma(userId, lista);
+      await onSaveSuccess();
     } catch (e) {
       setErro("Erro ao salvar cronograma: " + e.message);
     } finally {

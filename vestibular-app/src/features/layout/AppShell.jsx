@@ -16,11 +16,12 @@ import {
   Loader2,
   KeyRound,
 } from "lucide-react";
-import TarefasFeitas from "@/features/tarefas/MinhasTarefas";
+import MinhasTarefas from "@/features/tarefas/MinhasTarefas";
 import Home from "@/features/inicio/Home";
 import { BotaoTema } from "@/components/ui";
 import AlterarSenhaModal from "@/features/auth/AlterarSenhaModal";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { useAuth } from "@/features/auth/useAuth";
 
 // Carregamento sob demanda (code-splitting): as abas mais pesadas — Questões do
 // ENEM, Estatísticas (recharts), Simulado e a Biblioteca — só são baixadas
@@ -172,7 +173,8 @@ const ConteudoSidebar = ({
   </div>
 );
 
-function InterfaceBase({ cronograma, userId, onLogout }) {
+function AppShell() {
+  const { sair: onLogout } = useAuth();
   const { aba } = useParams();
   const navigate = useNavigate();
   const abaAtiva = MENU.some((m) => m.aba === aba) ? aba : "cronograma";
@@ -182,7 +184,6 @@ function InterfaceBase({ cronograma, userId, onLogout }) {
     "sidebar_recolhida",
     false,
   );
-  const listaCronograma = Array.isArray(cronograma) ? cronograma : [];
 
   const selecionarAba = (novaAba) => {
     navigate(`/app/${novaAba}`);
@@ -194,28 +195,22 @@ function InterfaceBase({ cronograma, userId, onLogout }) {
   function renderConteudo() {
     switch (abaAtiva) {
       case "cronograma":
-        return (
-          <Home
-            cronograma={listaCronograma}
-            userId={userId}
-            aoNavegar={selecionarAba}
-          />
-        );
+        return <Home aoNavegar={selecionarAba} />;
 
       case "tarefas":
-        return <TarefasFeitas userId={userId} />;
+        return <MinhasTarefas />;
 
       case "simulados":
         return (
           <Suspense fallback={<Carregando texto="Carregando simulados..." />}>
-            <Simulado userId={userId} />
+            <Simulado />
           </Suspense>
         );
 
       case "enem":
         return (
           <Suspense fallback={<Carregando texto="Abrindo as questões..." />}>
-            <QuestoesHub userId={userId} />
+            <QuestoesHub />
           </Suspense>
         );
 
@@ -229,7 +224,7 @@ function InterfaceBase({ cronograma, userId, onLogout }) {
       case "estatisticas":
         return (
           <Suspense fallback={<Carregando texto="Carregando estatísticas..." />}>
-            <Estatisticas userId={userId} />
+            <Estatisticas />
           </Suspense>
         );
 
@@ -330,4 +325,4 @@ function InterfaceBase({ cronograma, userId, onLogout }) {
   );
 }
 
-export default InterfaceBase;
+export default AppShell;

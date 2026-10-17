@@ -3,11 +3,14 @@ import { AnimatePresence } from "framer-motion";
 import PassoVestibular from "@/features/onboarding/PassoVestibular";
 import PassoConfiguracao from "@/features/onboarding/PassoConfiguracao";
 import PassoResumo from "@/features/onboarding/PassoResumo";
+import { useAuth } from "@/features/auth/useAuth";
 
 // Assistente de configuração inicial (vestibular → rotina/pesos → resumo e
 // salvamento do cronograma). Guarda os dados de cada passo em `dados`, o que
 // permite voltar sem perder o que já foi preenchido.
-export default function Onboarding({ onConcluir }) {
+export default function Onboarding() {
+  // Ao salvar, recarregar o cronograma na sessão libera a rota /app.
+  const { recarregarCronograma } = useAuth();
   const [step, setStep] = useState(1);
   const [dados, setDados] = useState({ vestibular: "ENEM" });
 
@@ -33,7 +36,7 @@ export default function Onboarding({ onConcluir }) {
           key="p3"
           cronograma={dados.cronograma}
           onBack={voltar}
-          onSaveSuccess={onConcluir}
+          onSaveSuccess={recarregarCronograma}
         />
       )}
     </AnimatePresence>

@@ -24,6 +24,7 @@ import {
   conquistas,
   recomendacoes,
 } from "@/features/simulado/simuladosService";
+import { useAuth } from "@/features/auth/useAuth";
 
 const ANOS = [
   2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011,
@@ -64,7 +65,8 @@ function Chip({ ativo, onClick, children }) {
   );
 }
 
-export default function Simulado({ userId }) {
+export default function Simulado() {
+  const { userId } = useAuth();
   // fase: config | carregando | rodando | resultado
   const [fase, setFase] = useState("config");
 

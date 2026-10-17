@@ -11,10 +11,10 @@ import {
   ArrowRight,
   Clock,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { processarEstatisticas } from "@/features/estatisticas/estatisticasService";
 import NoticiasDestaque from "@/features/noticias/NoticiasDestaque";
 import { Cartao, Esqueleto, BarraProgresso } from "@/components/ui";
+import { useAuth } from "@/features/auth/useAuth";
 
 function saudacao() {
   const h = new Date().getHours();
@@ -74,19 +74,15 @@ function CartaoIndicador({ icone: Icone, valor, rotulo, detalhe, indice }) {
   );
 }
 
-export default function Home({ cronograma, userId, aoNavegar }) {
-  const [nome, setNome] = useState("");
+export default function Home({ aoNavegar }) {
+  const { userId, nome: nomeCompleto, cronograma: salvo } = useAuth();
+  const nome = nomeCompleto.split(" ")[0];
+  const cronograma = Array.isArray(salvo) ? salvo : [];
   const [stats, setStats] = useState(null);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     let ativo = true;
-
-    supabase.auth.getUser().then(({ data }) => {
-      if (!ativo) return;
-      const completo = data?.user?.user_metadata?.nome || "";
-      setNome(completo.trim().split(" ")[0]);
-    });
 
     processarEstatisticas(userId).then((s) => {
       if (!ativo) return;

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Newspaper, Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { PRIORIDADES, prioridadeDe } from "@/constants/materias";
 import {
   listarNoticias,
@@ -10,6 +9,7 @@ import {
   excluirNoticia,
 } from "@/features/noticias/noticiasService";
 import { enviarArquivo } from "@/features/materiais/storageService";
+import { useAuth } from "@/features/auth/useAuth";
 
 const hoje = () => new Date().toISOString().split("T")[0];
 const formatarData = (iso) => {
@@ -36,6 +36,7 @@ const formVazio = () => ({
 });
 
 export default function GerenciarNoticias({ autor }) {
+  const { userId } = useAuth();
   const [noticias, setNoticias] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [form, setForm] = useState(formVazio());
@@ -96,7 +97,6 @@ export default function GerenciarNoticias({ autor }) {
     if (!form.titulo.trim()) return mostrarStatus("erro", "Informe um título.");
 
     setSalvando(true);
-    const { data: userData } = await supabase.auth.getUser();
 
     // Upload da imagem (opcional).
     let imagemUrl = form.imagem_url;
@@ -105,7 +105,7 @@ export default function GerenciarNoticias({ autor }) {
         setProgresso(0);
         const info = await enviarArquivo(
           imagemFile,
-          userData?.user?.id,
+          userId,
           setProgresso,
         );
         imagemUrl = info.url;

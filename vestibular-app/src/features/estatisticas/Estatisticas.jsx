@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/features/auth/useAuth";
 
 // Tooltip visual único, reaproveitado por todos os gráficos.
 function DicaGrafico({ active, payload, label, sufixo = "" }) {
@@ -53,7 +54,8 @@ function CardKPI({ valor, rotulo, sufixo = "", cor = "text-white", sub }) {
 
 const EIXO = { fill: "var(--color-ink-400)", fontSize: 11, fontWeight: 600 };
 
-export default function Estatisticas({ userId }) {
+export default function Estatisticas() {
+  const { userId } = useAuth();
   const [dados, setDados] = useState(null);
   const [tarefas, setTarefas] = useState(null);
   const [isSaving, setIsSaving] = useState(false);

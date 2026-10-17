@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/features/auth/useAuth";
+import { listarUsuarios, definirCargo } from "@/features/admin/usuariosService";
 
 const formatarData = (iso) => {
   if (!iso) return "";
@@ -24,7 +25,7 @@ export default function GerenciarUsuarios() {
   const [erro, setErro] = useState("");
   const [busca, setBusca] = useState("");
   const [salvandoId, setSalvandoId] = useState(null);
-  const [meuId, setMeuId] = useState(null);
+  const { userId: meuId } = useAuth();
   const [status, setStatus] = useState({ tipo: "", texto: "" });
 
   const mostrarStatus = (tipo, texto) => {
@@ -38,21 +39,17 @@ export default function GerenciarUsuarios() {
       setCarregando(true);
       setErro("");
 
-      const { data: userData } = await supabase.auth.getUser();
-      if (ativo) setMeuId(userData?.user?.id ?? null);
-
-      const { data, error } = await supabase.rpc("admin_listar_usuarios");
-      if (!ativo) return;
-
-      if (error) {
-        setErro(
-          "Não foi possível carregar os usuários. Você já rodou o supabase_migration.sql (parte 6)?",
-        );
-        setCarregando(false);
-        return;
+      try {
+        const lista = await listarUsuarios();
+        if (ativo) setUsuarios(lista);
+      } catch {
+        if (ativo)
+          setErro(
+            "Não foi possível carregar os usuários. Você já rodou o supabase_migration.sql (parte 6)?",
+          );
+      } finally {
+        if (ativo) setCarregando(false);
       }
-      setUsuarios(data || []);
-      setCarregando(false);
     }
     carregar();
     return () => {
@@ -77,17 +74,14 @@ export default function GerenciarUsuarios() {
     );
     setSalvandoId(u.user_id);
 
-    const { error } = await supabase.rpc("admin_definir_cargo", {
-      alvo: u.user_id,
-      novo_cargo: novoCargo,
-    });
-
-    setSalvandoId(null);
-
-    if (error) {
+    try {
+      await definirCargo(u.user_id, novoCargo);
+    } catch (error) {
       setUsuarios(anterior);
       mostrarStatus("erro", error.message || "Falha ao alterar o cargo.");
       return;
+    } finally {
+      setSalvandoId(null);
     }
     mostrarStatus(
       "sucesso",

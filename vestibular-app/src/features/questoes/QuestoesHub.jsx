@@ -13,6 +13,7 @@ import { contarQuestoesPorDisciplina } from "@/features/uerj/questoesUerjService
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { CabecalhoPagina, EstadoVazio, Selo } from "@/components/ui";
 import { cx } from "@/components/ui/cx";
+import { useAuth } from "@/features/auth/useAuth";
 
 const QuestoesEnem = lazy(() => import("@/features/questoes/QuestoesEnem"));
 const UerjHub = lazy(() => import("@/features/uerj/UerjHub"));
@@ -32,7 +33,8 @@ const CarregandoInterno = ({ texto }) => (
   </div>
 );
 
-export default function QuestoesHub({ userId }) {
+export default function QuestoesHub() {
+  const { userId } = useAuth();
   // null = hub · "enem" = banco ENEM · nome de matéria = pasta aberta
   const [pasta, setPasta] = usePersistedState("questoes_pasta", null);
   const [contagens, setContagens] = useState(null); // null = ainda carregando

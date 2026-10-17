@@ -10,7 +10,6 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import {
   MATERIAS,
   TIPOS_MATERIAL,
@@ -30,6 +29,7 @@ import GerenciarNoticias from "@/features/admin/GerenciarNoticias";
 import GerenciarUsuarios from "@/features/admin/GerenciarUsuarios";
 import GerenciarProvasUerj from "@/features/admin/GerenciarProvasUerj";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { useAuth } from "@/features/auth/useAuth";
 
 const formatarData = (iso) => {
   if (!iso) return "";
@@ -55,7 +55,8 @@ export default function PainelAdmin() {
     "admin_materia",
     MATERIAS[0].nome,
   );
-  const [professorNome, setProfessorNome] = useState("");
+  const { userId: usuarioId, email } = useAuth();
+  const professorNome = email ? email.split("@")[0] : "Professor";
 
   const [form, setForm] = useState(FORM_VAZIO);
   const [arquivo, setArquivo] = useState(null);
@@ -67,13 +68,6 @@ export default function PainelAdmin() {
   const [salvando, setSalvando] = useState(false);
   const [progresso, setProgresso] = useState(null);
   const [status, setStatus] = useState({ tipo: "", texto: "" });
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      const email = data?.user?.email || "";
-      setProfessorNome(email ? email.split("@")[0] : "Professor");
-    });
-  }, []);
 
   useEffect(() => {
     let ativo = true;
@@ -129,8 +123,6 @@ export default function PainelAdmin() {
       return mostrarStatus("erro", "Selecione o arquivo PDF.");
 
     setSalvando(true);
-    const { data: userData } = await supabase.auth.getUser();
-    const usuarioId = userData?.user?.id;
 
     // Upload do arquivo (se houver um novo).
     let infoArquivo = null;

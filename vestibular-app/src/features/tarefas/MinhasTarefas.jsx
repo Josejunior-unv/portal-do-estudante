@@ -21,6 +21,7 @@ import {
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { Botao, Selo, EstadoVazio, Esqueleto, BarraProgresso, CabecalhoPagina } from "@/components/ui";
 import { cx } from "@/components/ui/cx";
+import { useAuth } from "@/features/auth/useAuth";
 
 const formatarData = (iso) => {
   if (!iso) return "";
@@ -48,7 +49,8 @@ const TEXTO_ACAO = {
   link: "Abrir link",
 };
 
-export default function TarefasFeitas({ userId }) {
+export default function MinhasTarefas() {
+  const { userId } = useAuth();
   const [materiais, setMateriais] = useState([]);
   const [concluidas, setConcluidas] = useState({});
   const [carregando, setCarregando] = useState(true);
