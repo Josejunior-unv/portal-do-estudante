@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { createElement, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
@@ -25,6 +25,7 @@ import {
   salvarOrdem,
 } from "@/features/materiais/materiaisService";
 import { enviarArquivo, formatarTamanho } from "@/features/materiais/storageService";
+import { SeloMateria } from "@/components/ui";
 import GerenciarNoticias from "@/features/admin/GerenciarNoticias";
 import GerenciarUsuarios from "@/features/admin/GerenciarUsuarios";
 import GerenciarProvasUerj from "@/features/admin/GerenciarProvasUerj";
@@ -277,7 +278,7 @@ export default function PainelAdmin() {
                     : "bg-ink-900/40 text-ink-400 border-ink-800 hover:text-white hover:border-ink-600"
                 }`}
               >
-                <span className="text-lg">{m.icone}</span>
+                <SeloMateria sigla={m.sigla} />
                 {m.nome}
               </button>
             );
@@ -291,7 +292,7 @@ export default function PainelAdmin() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             onSubmit={handleSubmit}
-            className={`p-6 rounded-3xl bg-ink-900/60 backdrop-blur-xl border ${cor.borda} shadow-2xl`}
+            className="p-6 rounded-2xl bg-ink-900 border border-white/[0.1]"
           >
             <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
               <span className={cor.texto}>●</span>
@@ -311,7 +312,7 @@ export default function PainelAdmin() {
                       : "bg-ink-800/50 text-ink-300 border-ink-700 hover:border-gold-400/40"
                   }`}
                 >
-                  <span>{t.icone}</span>
+                  <t.icone size={15} />
                   {t.label}
                 </button>
               ))}
@@ -333,7 +334,7 @@ export default function PainelAdmin() {
                     type="file"
                     accept="application/pdf"
                     onChange={(e) => setArquivo(e.target.files?.[0] || null)}
-                    className="block w-full text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-gold-400 file:text-sobre-destaque hover:file:bg-gold-300 file:cursor-pointer cursor-pointer"
+                    className="block w-full text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-gold-400 file:text-sobre-destaque hover:file:bg-gold-500 file:cursor-pointer cursor-pointer"
                   />
                   {arquivo && (
                     <p className="text-xs text-ink-400 mt-2">
@@ -421,7 +422,7 @@ export default function PainelAdmin() {
                 <button
                   type="submit"
                   disabled={salvando}
-                  className={`bg-gold-400 hover:bg-gold-300 text-sobre-destaque font-bold py-3 px-7 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-95 ${
+                  className={`bg-gold-400 hover:bg-gold-500 text-sobre-destaque font-bold py-3 px-7 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-95 ${
                     salvando ? "opacity-60 cursor-wait" : ""
                   }`}
                 >
@@ -486,8 +487,8 @@ export default function PainelAdmin() {
                         </button>
                       </div>
 
-                      <span className="text-2xl mt-0.5">
-                        {tipoInfo(m.tipo).icone}
+                      <span className="mt-1 text-ink-400 shrink-0">
+                        {createElement(tipoInfo(m.tipo).icone, { size: 20 })}
                       </span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">

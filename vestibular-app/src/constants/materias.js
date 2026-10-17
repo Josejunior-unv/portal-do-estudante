@@ -1,19 +1,29 @@
+import {
+  FileText,
+  Link2,
+  PlayCircle,
+  PencilLine,
+  ClipboardList,
+  Megaphone,
+  Paperclip,
+} from "lucide-react";
+
 // Fonte única das matérias usadas na área do professor e nas tarefas do aluno.
 // Centralizado aqui para evitar listas duplicadas espalhadas pelos componentes.
 
 export const MATERIAS = [
-  { nome: "Matemática", sigla: "MAT", icone: "🔢", cor: "blue" },
-  { nome: "Português", sigla: "POR", icone: "📖", cor: "yellow" },
-  { nome: "Biologia", sigla: "BIO", icone: "🧬", cor: "green" },
-  { nome: "Química", sigla: "QUI", icone: "⚗️", cor: "purple" },
-  { nome: "Física", sigla: "FIS", icone: "⚛️", cor: "cyan" },
-  { nome: "História", sigla: "HIS", icone: "🏛️", cor: "amber" },
-  { nome: "Geografia", sigla: "GEO", icone: "🌍", cor: "emerald" },
-  { nome: "Filosofia", sigla: "FIL", icone: "🦉", cor: "indigo" },
-  { nome: "Sociologia", sigla: "SOC", icone: "👥", cor: "rose" },
-  { nome: "Inglês", sigla: "ING", icone: "🇬🇧", cor: "sky" },
-  { nome: "Espanhol", sigla: "ESP", icone: "🇪🇸", cor: "orange" },
-  { nome: "Francês", sigla: "FRA", icone: "🇫🇷", cor: "violet" },
+  { nome: "Matemática", sigla: "MAT", cor: "blue" },
+  { nome: "Português", sigla: "POR", cor: "yellow" },
+  { nome: "Biologia", sigla: "BIO", cor: "green" },
+  { nome: "Química", sigla: "QUI", cor: "purple" },
+  { nome: "Física", sigla: "FIS", cor: "cyan" },
+  { nome: "História", sigla: "HIS", cor: "amber" },
+  { nome: "Geografia", sigla: "GEO", cor: "emerald" },
+  { nome: "Filosofia", sigla: "FIL", cor: "indigo" },
+  { nome: "Sociologia", sigla: "SOC", cor: "rose" },
+  { nome: "Inglês", sigla: "ING", cor: "sky" },
+  { nome: "Espanhol", sigla: "ESP", cor: "orange" },
+  { nome: "Francês", sigla: "FRA", cor: "violet" },
 ];
 
 // Sigla curta da matéria (como nas abas do caderno de prova). Para nomes
@@ -28,13 +38,13 @@ export const siglaDaMateria = (nome = "") =>
 
 // Tipos de conteúdo que o professor pode publicar.
 export const TIPOS_MATERIAL = [
-  { id: "pdf", label: "PDF", icone: "📄" },
-  { id: "link", label: "Link", icone: "🔗" },
-  { id: "video", label: "Vídeo", icone: "🎬" },
-  { id: "exercicio", label: "Exercício", icone: "✏️" },
-  { id: "tarefa", label: "Tarefa", icone: "📌" },
-  { id: "aviso", label: "Aviso", icone: "📢" },
-  { id: "complementar", label: "Complementar", icone: "📎" },
+  { id: "pdf", label: "PDF", icone: FileText },
+  { id: "link", label: "Link", icone: Link2 },
+  { id: "video", label: "Vídeo", icone: PlayCircle },
+  { id: "exercicio", label: "Exercício", icone: PencilLine },
+  { id: "tarefa", label: "Tarefa", icone: ClipboardList },
+  { id: "aviso", label: "Aviso", icone: Megaphone },
+  { id: "complementar", label: "Complementar", icone: Paperclip },
 ];
 
 // Tipos que enviam arquivo (upload) em vez de colar URL.
@@ -135,9 +145,9 @@ export const coresDe = (cor) => CORES_MATERIA[cor] || CORES_MATERIA.blue;
 
 // Prioridades das notícias do mural do administrador.
 export const PRIORIDADES = [
-  { valor: 0, label: "Normal", icone: "•", classe: "text-ink-400 bg-ink-500/10" },
-  { valor: 1, label: "Alta", icone: "▲", classe: "text-amber-400 bg-amber-500/10" },
-  { valor: 2, label: "Urgente", icone: "🔥", classe: "text-rose-400 bg-rose-500/10" },
+  { valor: 0, label: "Normal", classe: "text-ink-400 bg-ink-500/10" },
+  { valor: 1, label: "Alta", classe: "text-amber-400 bg-amber-500/10" },
+  { valor: 2, label: "Urgente", classe: "text-rose-400 bg-rose-500/10" },
 ];
 export const prioridadeDe = (v) =>
   PRIORIDADES.find((p) => p.valor === Number(v)) || PRIORIDADES[0];

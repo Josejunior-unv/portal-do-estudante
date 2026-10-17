@@ -36,9 +36,9 @@ export function salvarSimulado(userId, registro) {
 }
 
 export function medalhaDe(pct) {
-  if (pct >= 90) return { id: "ouro", nome: "Ouro", icone: "🥇", cor: "text-amber-300" };
-  if (pct >= 75) return { id: "prata", nome: "Prata", icone: "🥈", cor: "text-ink-300" };
-  if (pct >= 60) return { id: "bronze", nome: "Bronze", icone: "🥉", cor: "text-orange-300" };
+  if (pct >= 90) return { id: "ouro", nome: "Ouro", cor: "text-amber-300" };
+  if (pct >= 75) return { id: "prata", nome: "Prata", cor: "text-ink-300" };
+  if (pct >= 60) return { id: "bronze", nome: "Bronze", cor: "text-orange-300" };
   return null;
 }
 
@@ -104,14 +104,14 @@ export function conquistas(historico) {
   const totalQuestoes = historico.reduce((s, x) => s + x.totalQuestoes, 0);
 
   return [
-    { id: "primeiro", nome: "Primeiro Passo", icone: "🎯", desc: "Concluiu 1 simulado", ok: totalSim >= 1 },
-    { id: "maratona", nome: "Maratonista", icone: "🏃", desc: "5 simulados concluídos", ok: totalSim >= 5 },
-    { id: "dedicado", nome: "Dedicado", icone: "🔥", desc: "10 simulados concluídos", ok: totalSim >= 10 },
-    { id: "foco", nome: "Foco Total", icone: "🧠", desc: "Um simulado com 20+ questões", ok: grandes },
-    { id: "consistente", nome: "Consistente", icone: "📈", desc: "3 simulados com 60%+", ok: bons >= 3 },
-    { id: "ouro", nome: "Medalha de Ouro", icone: "🥇", desc: "Tirou 90%+ em um simulado", ok: temOuro },
-    { id: "milagre", nome: "Nota Mil", icone: "💯", desc: "Gabaritou um simulado", ok: notaMil },
-    { id: "centuriao", nome: "Centurião", icone: "⚔️", desc: "100+ questões no total", ok: totalQuestoes >= 100 },
+    { id: "primeiro", nome: "Primeiro Passo", desc: "Concluiu 1 simulado", ok: totalSim >= 1 },
+    { id: "maratona", nome: "Maratonista", desc: "5 simulados concluídos", ok: totalSim >= 5 },
+    { id: "dedicado", nome: "Dedicado", desc: "10 simulados concluídos", ok: totalSim >= 10 },
+    { id: "foco", nome: "Foco Total", desc: "Um simulado com 20+ questões", ok: grandes },
+    { id: "consistente", nome: "Consistente", desc: "3 simulados com 60%+", ok: bons >= 3 },
+    { id: "ouro", nome: "Medalha de Ouro", desc: "Tirou 90%+ em um simulado", ok: temOuro },
+    { id: "milagre", nome: "Nota Mil", desc: "Gabaritou um simulado", ok: notaMil },
+    { id: "centuriao", nome: "Centurião", desc: "100+ questões no total", ok: totalQuestoes >= 100 },
   ];
 }
 

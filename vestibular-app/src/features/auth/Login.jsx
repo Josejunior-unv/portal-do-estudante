@@ -1,15 +1,10 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, GraduationCap, BookOpenCheck, TrendingUp, ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import { Botao, CampoTexto, CampoSenha, Alerta, BotaoTema } from '@/components/ui'
+import { Botao, CampoTexto, CampoSenha, Alerta, BotaoTema, Bolha } from '@/components/ui'
 import { SENHA_MINIMA, traduzErroAuth as traduzErro, solicitarRecuperacaoSenha } from '@/features/auth/authService'
 
-const PILARES = [
-  { icone: BookOpenCheck, titulo: 'Provas e materiais', texto: 'Biblioteca completa das provas da UERJ, organizada por ano e matéria.' },
-  { icone: GraduationCap, titulo: 'Questões e simulados', texto: 'Banco oficial do ENEM com correção instantânea e ranking.' },
-  { icone: TrendingUp, titulo: 'Evolução visível', texto: 'Estatísticas automáticas do seu desempenho em cada matéria.' },
-]
 
 function Login() {
   // modo: 'login' | 'cadastro' | 'recuperar'
@@ -144,68 +139,31 @@ function Login() {
   return (
     <div className="min-h-screen bg-ink-950 lg:grid lg:grid-cols-[1.1fr_1fr]">
       {/* ===== PAINEL DA MARCA ===== */}
-      <div className="tema-escuro-fixo relative hidden lg:flex flex-col justify-between overflow-hidden bg-black p-12">
-        {/* brilho dourado ambiente */}
-        <div
-          aria-hidden
-          className="absolute -top-40 -left-40 w-[560px] h-[560px] rounded-full opacity-[0.07] blur-3xl"
-          style={{ background: 'radial-gradient(circle, #F5C042 0%, transparent 70%)' }}
-        />
-        <div
-          aria-hidden
-          className="absolute -bottom-52 -right-32 w-[480px] h-[480px] rounded-full opacity-[0.05] blur-3xl"
-          style={{ background: 'radial-gradient(circle, #F5C042 0%, transparent 70%)' }}
+      <div className="tema-escuro-fixo relative hidden lg:flex flex-col justify-between bg-black p-12 text-ink-200">
+        <img
+          src="/logo-uerj.jpeg"
+          alt="Pré-Vestibular UERJ Para Todos"
+          className="w-56 select-none pointer-events-none"
+          draggable={false}
         />
 
-        <div className="relative z-10 flex items-center gap-2 text-gold-300">
-          <Flame size={20} strokeWidth={2.5} />
-          <span className="font-display font-bold tracking-wide text-sm text-ink-200 uppercase">
-            Pré-Vestibular UERJ Para Todos
-          </span>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="relative z-10 max-w-lg"
-        >
-          <img
-            src="/logo-uerj.jpeg"
-            alt="Pré-Vestibular UERJ Para Todos"
-            className="w-64 mb-10 select-none pointer-events-none"
-            draggable={false}
-          />
-          <h1 className="font-display text-4xl font-black text-white leading-[1.1] tracking-tight">
-            Sua aprovação começa
-            <br />
-            com um bom plano.
+        <div className="max-w-md">
+          <div className="flex gap-2.5 mb-8" aria-hidden>
+            {['A', 'B', 'C', 'D'].map((l) => (
+              <Bolha key={l} letra={l} estado={l === 'B' ? 'marcada' : 'vazia'} tamanho="lg" />
+            ))}
+          </div>
+          <h1 className="text-5xl font-black text-white leading-[1.02]">
+            As provas da UERJ, questão por questão, com o gabarito oficial.
           </h1>
-          <p className="text-ink-300 mt-4 leading-7">
-            Cronograma personalizado, provas anteriores, simulados e estatísticas
-            — tudo em um só lugar, feito para quem vai encarar a UERJ.
-          </p>
-        </motion.div>
-
-        <div className="relative z-10 grid gap-5">
-          {PILARES.map((p, i) => (
-            <motion.div
-              key={p.titulo}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.25 + i * 0.12, duration: 0.5 }}
-              className="flex items-start gap-3.5"
-            >
-              <span className="mt-0.5 w-9 h-9 shrink-0 rounded-xl bg-gold-400/10 border border-gold-400/20 text-gold-300 flex items-center justify-center">
-                <p.icone size={17} strokeWidth={2} />
-              </span>
-              <div>
-                <p className="text-sm font-bold text-white">{p.titulo}</p>
-                <p className="text-[13px] text-ink-400 leading-5 mt-0.5">{p.texto}</p>
-              </div>
-            </motion.div>
-          ))}
+          <ul className="mt-8 space-y-2 text-ink-300 leading-7">
+            <li>Provas de 2013 a 2027, objetivas e discursivas.</li>
+            <li>O texto de apoio ao lado da questão, como no dia da prova.</li>
+            <li>Simulados com tempo e o seu plano de estudos da semana.</li>
+          </ul>
         </div>
+
+        <p className="text-sm text-ink-500">Pré-Vestibular UERJ Para Todos</p>
       </div>
 
       {/* ===== FORMULÁRIO ===== */}

@@ -124,7 +124,7 @@ export default function PassoConfiguracao({ onNext, onBack, inicial = {} }) {
           type="button"
           onClick={finalizar}
           whileTap={{ scale: 0.99 }}
-          className="flex-1 bg-gold-400 hover:bg-gold-300 text-sobre-destaque font-bold py-3 rounded-xl transition-all shadow-[var(--shadow-gold)]"
+          className="flex-1 bg-gold-400 hover:bg-gold-500 text-sobre-destaque font-bold py-3 rounded-xl transition-all shadow-[var(--shadow-gold)]"
         >
           Gerar meu cronograma
         </motion.button>
