@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -11,6 +12,11 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  // `@/` aponta para `src/` — imports absolutos que não quebram quando um
+  // arquivo muda de pasta (espelhado no jsconfig.json para o editor).
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
   build: {
     rolldownOptions: {
       output: {

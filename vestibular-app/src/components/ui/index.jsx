@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sun, Moon, Eye, EyeOff } from "lucide-react";
-import { cx } from "./cx";
-import { useTema } from "../../hooks/useTema";
+import { cx } from "@/components/ui/cx";
+import { useTema } from "@/hooks/useTema";
 
 // ============================================================
 // Kit de UI — UERJ Para Todos
