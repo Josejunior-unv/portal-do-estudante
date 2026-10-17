@@ -69,6 +69,18 @@ Quem não passa é redirecionado para `rotaInicial()` (ver `rotas.js`).
 - Visual: kit de `components/ui` e semântica `ink`/`gold`/`white`, sem
   variantes `dark:`/`light:`.
 
+## Identidade visual
+
+Tirada da prova da UERJ: tema PAPEL (padrão, segue o sistema) e NOITE; amarelo
+marca-texto (`gold-400`) só como preenchimento/grifo, laranja do selo
+"QUESTÃO" (`text-laranja`), verde/vermelho da correção. Títulos em Archivo
+condensada; texto em Atkinson Hyperlegible Next (+ Mono para números e
+letras). Peças do kit: `Grifo`, `Bolha`, `CartaoResposta`, `SeloMateria`.
+
+A questão da UERJ é exibida pelo **recorte** do PDF oficial (`recorte_url`),
+com o texto de apoio ao lado em tela larga. No celular abre como texto quando
+`texto_confiavel` (sem figura nem fração). Ver `scripts/importador_uerj/revisao/`.
+
 ## Qualidade
 
 | Comando | O quê |
@@ -76,6 +88,7 @@ Quem não passa é redirecionado para `rotaInicial()` (ver `rotas.js`).
 | `npm run verificar` | lint + 55 testes unitários + build |
 | `npm run test:watch` | testes em modo observação |
 | `python scripts/e2e/smoke.py` | abre todas as telas com o Supabase simulado (precisa do `npm run dev`) |
+| `python scripts/e2e/visual_questoes.py` | capturas da tela de questão com dados reais da revisão (`E2E_TEMA=dark` para o modo noite) |
 
 O CI (`.github/workflows/ci.yml`, na raiz do repositório) roda lint + testes
 + build em Linux a cada push e PR.
