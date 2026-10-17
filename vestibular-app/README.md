@@ -52,6 +52,13 @@ O cadastro cria sempre `aluno`. A promoção para `admin` é feita pela aba
 **👥 Usuários** do Painel do Admin (RPCs SECURITY DEFINER — um admin não
 consegue rebaixar a si mesmo).
 
+## Senhas
+
+Recuperação por e-mail ("Esqueceu a senha?" no login → link → `/redefinir-senha`)
+e troca de senha de dentro do app ("Alterar senha"). Requer configurar as
+Redirect URLs e um SMTP no Supabase — passo a passo em
+[`docs/AUTENTICACAO_EMAIL.md`](docs/AUTENTICACAO_EMAIL.md).
+
 ## Importador de provas da UERJ
 
 ```bash

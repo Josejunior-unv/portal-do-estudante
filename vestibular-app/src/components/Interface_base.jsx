@@ -14,10 +14,12 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Loader2,
+  KeyRound,
 } from "lucide-react";
 import TarefasFeitas from "./Tarefas_Feitas";
 import Home from "./Home";
 import { BotaoTema } from "./ui";
+import AlterarSenhaModal from "./AlterarSenhaModal";
 import { usePersistedState } from "../hooks/usePersistedState";
 
 // Carregamento sob demanda (code-splitting): as abas mais pesadas — Questões do
@@ -75,6 +77,7 @@ const ConteudoSidebar = ({
   abaAtiva,
   onSelecionar,
   onLogout,
+  onAlterarSenha,
   recolhida = false,
   onAlternarRecolhida,
 }) => (
@@ -143,6 +146,18 @@ const ConteudoSidebar = ({
       />
       <button
         type="button"
+        onClick={onAlterarSenha}
+        title={recolhida ? "Alterar senha" : undefined}
+        className={`w-full flex items-center gap-3 rounded-xl text-sm font-semibold text-ink-400
+                    hover:bg-white/[0.05] hover:text-ink-100 transition-colors duration-200 active:scale-[0.98] ${
+                      recolhida ? "justify-center px-0 py-3" : "px-3.5 py-2.5"
+                    }`}
+      >
+        <KeyRound size={18} strokeWidth={2} className="shrink-0" />
+        {!recolhida && "Alterar senha"}
+      </button>
+      <button
+        type="button"
         onClick={onLogout}
         title={recolhida ? "Sair da conta" : undefined}
         className={`w-full flex items-center gap-3 rounded-xl text-sm font-semibold text-ink-400
@@ -162,6 +177,7 @@ function InterfaceBase({ cronograma, userId, onLogout }) {
   const navigate = useNavigate();
   const abaAtiva = MENU.some((m) => m.aba === aba) ? aba : "cronograma";
   const [drawerAberto, setDrawerAberto] = useState(false);
+  const [alterarSenhaAberto, setAlterarSenhaAberto] = useState(false);
   const [sidebarRecolhida, setSidebarRecolhida] = usePersistedState(
     "sidebar_recolhida",
     false,
@@ -235,6 +251,7 @@ function InterfaceBase({ cronograma, userId, onLogout }) {
           abaAtiva={abaAtiva}
           onSelecionar={selecionarAba}
           onLogout={onLogout}
+          onAlterarSenha={() => setAlterarSenhaAberto(true)}
           recolhida={sidebarRecolhida}
           onAlternarRecolhida={() => setSidebarRecolhida((v) => !v)}
         />
@@ -262,6 +279,10 @@ function InterfaceBase({ cronograma, userId, onLogout }) {
                 abaAtiva={abaAtiva}
                 onSelecionar={selecionarAba}
                 onLogout={onLogout}
+                onAlterarSenha={() => {
+                  setDrawerAberto(false);
+                  setAlterarSenhaAberto(true);
+                }}
               />
             </motion.aside>
           </>
@@ -300,6 +321,11 @@ function InterfaceBase({ cronograma, userId, onLogout }) {
           </AnimatePresence>
         </main>
       </div>
+
+      <AlterarSenhaModal
+        aberto={alterarSenhaAberto}
+        onFechar={() => setAlterarSenhaAberto(false)}
+      />
     </div>
   );
 }

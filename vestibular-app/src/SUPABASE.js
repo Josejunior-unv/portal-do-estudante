@@ -11,4 +11,9 @@ export const SUPABASE_ANON_KEY =
 // Bucket público usado para os PDFs enviados pelos professores.
 export const BUCKET_MATERIAIS = 'materiais'
 
+// Hash da URL no carregamento, capturado ANTES de o cliente processá-lo e
+// limpá-lo. É por ele que a tela de redefinir senha descobre se o link do
+// e-mail veio expirado (#error_code=otp_expired...).
+export const HASH_INICIAL = typeof window !== 'undefined' ? window.location.hash : ''
+
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)

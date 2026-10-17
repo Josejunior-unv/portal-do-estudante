@@ -1,21 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Eye, EyeOff, Flame, GraduationCap, BookOpenCheck, TrendingUp } from 'lucide-react'
+import { Flame, GraduationCap, BookOpenCheck, TrendingUp, ArrowLeft } from 'lucide-react'
 import { supabase } from '../SUPABASE'
-import { Botao, CampoTexto, Alerta, BotaoTema } from './ui'
-
-// Traduz as mensagens de erro mais comuns do Supabase para o usuário final.
-function traduzErro(msg = '') {
-  const m = msg.toLowerCase()
-  if (m.includes('invalid login credentials')) return 'E-mail ou senha incorretos.'
-  if (m.includes('user already registered') || m.includes('already been registered'))
-    return 'Este e-mail já está cadastrado. Faça login.'
-  if (m.includes('password should be at least')) return 'A senha deve ter pelo menos 6 caracteres.'
-  if (m.includes('unable to validate email') || m.includes('invalid format')) return 'E-mail inválido.'
-  if (m.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.'
-  if (m.includes('signups not allowed')) return 'Cadastro desativado no momento. Fale com o administrador.'
-  return msg || 'Ocorreu um erro. Tente novamente.'
-}
+import { Botao, CampoTexto, CampoSenha, Alerta, BotaoTema } from './ui'
+import { SENHA_MINIMA, traduzErroAuth as traduzErro, solicitarRecuperacaoSenha } from './authService'
 
 const PILARES = [
   { icone: BookOpenCheck, titulo: 'Provas e materiais', texto: 'Biblioteca completa das provas da UERJ, organizada por ano e matéria.' },
@@ -24,7 +12,7 @@ const PILARES = [
 ]
 
 function Login() {
-  // modo: 'login' | 'cadastro'
+  // modo: 'login' | 'cadastro' | 'recuperar'
   const [modo, setModo] = useState('login')
 
   const [nome, setNome] = useState('')
@@ -34,14 +22,11 @@ function Login() {
 
   const [erro, setErro] = useState('')
   const [sucesso, setSucesso] = useState('')
-  const [aviso, setAviso] = useState('')
   const [carregando, setCarregando] = useState(false)
-  const [mostrarSenha, setMostrarSenha] = useState(false)
 
   const limparMensagens = () => {
     setErro('')
     setSucesso('')
-    setAviso('')
   }
 
   function trocarModo(novo) {
@@ -72,8 +57,8 @@ function Login() {
     e.preventDefault()
     limparMensagens()
 
-    if (senha.length < 6) {
-      setErro('A senha deve ter pelo menos 6 caracteres.')
+    if (senha.length < SENHA_MINIMA) {
+      setErro(`A senha deve ter pelo menos ${SENHA_MINIMA} caracteres.`)
       return
     }
     if (senha !== confirmarSenha) {
@@ -114,7 +99,47 @@ function Login() {
     }
   }
 
+  async function handleRecuperar(e) {
+    e.preventDefault()
+    limparMensagens()
+    setCarregando(true)
+    try {
+      await solicitarRecuperacaoSenha(email)
+      // Mensagem neutra de propósito: não revela se o e-mail tem conta.
+      setSucesso(
+        'Se existir uma conta com esse e-mail, você vai receber um link para criar uma nova senha. Confira também a caixa de spam.',
+      )
+    } catch (err) {
+      setErro(err.message)
+    } finally {
+      setCarregando(false)
+    }
+  }
+
   const ehCadastro = modo === 'cadastro'
+  const ehRecuperar = modo === 'recuperar'
+
+  const TEXTOS = {
+    login: { titulo: 'Bem-vindo de volta', sub: 'Entre para continuar seus estudos.' },
+    cadastro: { titulo: 'Criar sua conta', sub: 'Leva menos de um minuto — e o estudo começa hoje.' },
+    recuperar: {
+      titulo: 'Recuperar senha',
+      sub: 'Informe o e-mail da sua conta e enviaremos um link para você criar uma nova senha.',
+    },
+  }
+
+  const onSubmit = ehRecuperar ? handleRecuperar : ehCadastro ? handleCadastro : handleLogin
+  const textoBotao = carregando
+    ? ehRecuperar
+      ? 'Enviando...'
+      : ehCadastro
+        ? 'Criando conta...'
+        : 'Entrando...'
+    : ehRecuperar
+      ? 'Enviar link de recuperação'
+      : ehCadastro
+        ? 'Criar minha conta'
+        : 'Entrar'
 
   return (
     <div className="min-h-screen bg-ink-950 lg:grid lg:grid-cols-[1.1fr_1fr]">
@@ -203,16 +228,12 @@ function Login() {
           </div>
 
           <h2 className="font-display text-2xl font-black text-white tracking-tight">
-            {ehCadastro ? 'Criar sua conta' : 'Bem-vindo de volta'}
+            {TEXTOS[modo].titulo}
           </h2>
-          <p className="text-sm text-ink-400 mt-1.5 mb-7">
-            {ehCadastro
-              ? 'Leva menos de um minuto — e o estudo começa hoje.'
-              : 'Entre para continuar seus estudos.'}
-          </p>
+          <p className="text-sm text-ink-400 mt-1.5 mb-7">{TEXTOS[modo].sub}</p>
 
           {/* Alternância Entrar / Criar conta */}
-          <div className="relative flex p-1 bg-ink-900 border border-white/[0.06] rounded-xl mb-6">
+          <div className={`relative flex p-1 bg-ink-900 border border-white/[0.06] rounded-xl mb-6 ${ehRecuperar ? 'hidden' : ''}`}>
             {['login', 'cadastro'].map((m) => (
               <button
                 key={m}
@@ -247,14 +268,9 @@ function Login() {
                 {sucesso}
               </Alerta>
             )}
-            {aviso && (
-              <Alerta key="aviso" variante="aviso" className="mb-4">
-                {aviso}
-              </Alerta>
-            )}
           </AnimatePresence>
 
-          <form onSubmit={ehCadastro ? handleCadastro : handleLogin} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-4">
             {ehCadastro && (
               <CampoTexto
                 rotulo="Nome"
@@ -278,51 +294,34 @@ function Login() {
               autoComplete="email"
             />
 
-            <div>
-              <label className="flex flex-col gap-1.5">
-                <span className="text-xs font-semibold text-ink-300">Senha</span>
-                <div className="relative">
-                  <CampoTexto
-                    type={mostrarSenha ? 'text' : 'password'}
-                    required
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    placeholder={ehCadastro ? 'Mínimo de 6 caracteres' : '••••••••'}
-                    autoComplete={ehCadastro ? 'new-password' : 'current-password'}
-                    className="pr-11"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setMostrarSenha(!mostrarSenha)}
-                    aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-500 hover:text-ink-200 transition-colors"
-                  >
-                    {mostrarSenha ? <EyeOff size={17} /> : <Eye size={17} />}
-                  </button>
-                </div>
-              </label>
+            {!ehRecuperar && (
+              <div>
+                <CampoSenha
+                  rotulo="Senha"
+                  required
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  placeholder={ehCadastro ? `Mínimo de ${SENHA_MINIMA} caracteres` : '••••••••'}
+                  autoComplete={ehCadastro ? 'new-password' : 'current-password'}
+                />
 
-              {!ehCadastro && (
-                <div className="text-right mt-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setAviso(
-                        'A recuperação de senha é feita pela equipe. Fale com o administrador do curso.',
-                      )
-                    }
-                    className="text-xs text-ink-400 hover:text-gold-300 transition-colors"
-                  >
-                    Esqueceu a senha?
-                  </button>
-                </div>
-              )}
-            </div>
+                {!ehCadastro && (
+                  <div className="text-right mt-2">
+                    <button
+                      type="button"
+                      onClick={() => trocarModo('recuperar')}
+                      className="text-xs text-ink-400 hover:text-gold-300 transition-colors"
+                    >
+                      Esqueceu a senha?
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {ehCadastro && (
-              <CampoTexto
+              <CampoSenha
                 rotulo="Confirmar senha"
-                type={mostrarSenha ? 'text' : 'password'}
                 required
                 value={confirmarSenha}
                 onChange={(e) => setConfirmarSenha(e.target.value)}
@@ -337,14 +336,15 @@ function Login() {
               tamanho="lg"
               className="w-full mt-2"
             >
-              {carregando
-                ? 'Entrando...'
-                : ehCadastro
-                  ? 'Criar minha conta'
-                  : 'Entrar'}
+              {textoBotao}
             </Botao>
           </form>
 
+          {ehRecuperar ? (
+            <Botao variante="fantasma" className="w-full mt-5" onClick={() => trocarModo('login')}>
+              <ArrowLeft size={15} /> Voltar para o login
+            </Botao>
+          ) : (
           <p className="mt-7 text-center text-sm text-ink-400">
             {ehCadastro ? 'Já tem uma conta?' : 'Não tem uma conta?'}{' '}
             <button
@@ -355,6 +355,7 @@ function Login() {
               {ehCadastro ? 'Entrar' : 'Criar conta'}
             </button>
           </p>
+          )}
         </motion.div>
       </div>
     </div>
