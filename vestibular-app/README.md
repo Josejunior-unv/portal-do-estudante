@@ -12,7 +12,7 @@ automáticas de desempenho.
 - **Frontend:** React 19 + Vite 8 + Tailwind CSS v4 (tokens no `@theme` de
   `src/index.css`), framer-motion, recharts, lucide-react, react-router.
 - **Backend:** Supabase (Auth + Postgres com RLS + Storage). Cliente em
-  `src/SUPABASE.js` — a chave anon/publishable é pública por design; a
+  `src/lib/supabase.js` — a chave anon/publishable é pública por design; a
   segurança real é feita pelas políticas de RLS (`supabase_migration.sql`).
 - **Questões ENEM:** API pública `api.enem.dev`.
 - **Questões UERJ:** pipeline offline em Python (`scripts/importador_uerj/`)
@@ -29,8 +29,13 @@ npm run dev            # http://localhost:5173
 Antes de commitar:
 
 ```bash
-npm run lint && npm run build
+npm run verificar      # lint + testes (Vitest) + build
+python scripts/e2e/smoke.py   # opcional: todas as telas com o Supabase simulado
 ```
+
+Estrutura do código, fluxo da sessão e regras da casa:
+[`docs/ARQUITETURA.md`](docs/ARQUITETURA.md). O CI do GitHub roda lint,
+testes e build a cada push.
 
 ## Banco de dados
 

@@ -9,9 +9,10 @@
 | Link expirado/já usado | `/redefinir-senha` | A tela lê o erro do `#hash` da URL e oferece enviar um novo link. |
 | Logado e quer trocar | Sidebar (aluno) ou cabeçalho (admin) → "Alterar senha" | Confirma a senha atual e grava a nova. |
 
-Código: `src/components/authService.js` (regras + chamadas), `RedefinirSenha.jsx`,
-`AlterarSenhaModal.jsx` e o modo `recuperar` em `login.jsx`. O `App.jsx`
-redireciona para `/redefinir-senha` quando recebe o evento `PASSWORD_RECOVERY`.
+Código em `src/features/auth/`: `authService.js` (regras + chamadas),
+`RedefinirSenha.jsx`, `AlterarSenhaModal.jsx` e o modo `recuperar` em
+`Login.jsx`. O `AuthProvider.jsx` redireciona para `/redefinir-senha` quando
+recebe o evento `PASSWORD_RECOVERY`.
 
 ## Configuração obrigatória no painel do Supabase
 
