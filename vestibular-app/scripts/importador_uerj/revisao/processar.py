@@ -82,6 +82,7 @@ for pid in alvo:
             "numero": q.numero, "idioma": idi, "area": q.area, "pagina": q.selo.pagina + 1,
             "arquivo": nome + ".webp", "apoios": q.apoios, "tem_alternativas": q.tem_alternativas,
             "enunciado": q.texto["enunciado"], "alternativas": q.texto["alternativas"],
+            "tem_figura": q.texto["tem_figura"], "tem_formula": q.texto["tem_formula"],
             "db_id": linha_db["id"] if linha_db else None,
             "altura": round(altura),
         })

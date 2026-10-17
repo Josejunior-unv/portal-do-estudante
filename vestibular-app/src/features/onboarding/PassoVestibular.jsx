@@ -43,7 +43,7 @@ export default function PassoVestibular({ onNext, inicial = "ENEM" }) {
               }`}
             >
               {ativo && (
-                <span className="absolute top-3 right-3 w-6 h-6 rounded-full bg-gold-400 text-ink-950 text-xs font-bold flex items-center justify-center">
+                <span className="absolute top-3 right-3 w-6 h-6 rounded-full bg-gold-400 text-sobre-destaque text-xs font-bold flex items-center justify-center">
                   ✓
                 </span>
               )}
@@ -58,7 +58,7 @@ export default function PassoVestibular({ onNext, inicial = "ENEM" }) {
       <button
         type="button"
         onClick={() => onNext({ vestibular })}
-        className="w-full bg-gold-400 hover:bg-gold-300 text-ink-950 font-bold py-3.5 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-[0.99]"
+        className="w-full bg-gold-400 hover:bg-gold-300 text-sobre-destaque font-bold py-3.5 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-[0.99]"
       >
         Continuar →
       </button>

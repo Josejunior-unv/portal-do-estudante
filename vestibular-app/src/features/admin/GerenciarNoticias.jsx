@@ -178,7 +178,7 @@ export default function GerenciarNoticias({ autor }) {
         className="p-6 rounded-3xl bg-ink-900/60 backdrop-blur-xl border border-gold-400/20 shadow-2xl h-fit"
       >
         <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
-          <Newspaper size={18} className="text-gold-400" />{" "}
+          <Newspaper size={18} className="text-gold-300" />{" "}
           {editandoId ? "Editar notícia" : "Nova notícia"}
         </h2>
 
@@ -207,7 +207,7 @@ export default function GerenciarNoticias({ autor }) {
               type="file"
               accept="image/*"
               onChange={(e) => setImagemFile(e.target.files?.[0] || null)}
-              className="mt-2 block w-full text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-gold-400 file:text-ink-950 hover:file:bg-gold-300 file:cursor-pointer cursor-pointer"
+              className="mt-2 block w-full text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-gold-400 file:text-sobre-destaque hover:file:bg-gold-300 file:cursor-pointer cursor-pointer"
             />
             {(imagemFile || form.imagem_url) && (
               <p className="text-xs text-ink-500 mt-2 truncate">
@@ -298,7 +298,7 @@ export default function GerenciarNoticias({ autor }) {
             <button
               type="submit"
               disabled={salvando}
-              className={`bg-gold-400 hover:bg-gold-300 text-ink-950 font-bold py-3 px-7 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-95 ${
+              className={`bg-gold-400 hover:bg-gold-300 text-sobre-destaque font-bold py-3 px-7 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-95 ${
                 salvando ? "opacity-60 cursor-wait" : ""
               }`}
             >
@@ -386,7 +386,7 @@ export default function GerenciarNoticias({ autor }) {
                       <button
                         onClick={() => editar(n)}
                         title="Editar"
-                        className="text-ink-500 hover:text-gold-400 p-1"
+                        className="text-ink-500 hover:text-gold-300 p-1"
                       >
                         <Pencil size={15} />
                       </button>

@@ -2,19 +2,29 @@
 // Centralizado aqui para evitar listas duplicadas espalhadas pelos componentes.
 
 export const MATERIAS = [
-  { nome: "Matemática", icone: "🔢", cor: "blue" },
-  { nome: "Português", icone: "📖", cor: "yellow" },
-  { nome: "Biologia", icone: "🧬", cor: "green" },
-  { nome: "Química", icone: "⚗️", cor: "purple" },
-  { nome: "Física", icone: "⚛️", cor: "cyan" },
-  { nome: "História", icone: "🏛️", cor: "amber" },
-  { nome: "Geografia", icone: "🌍", cor: "emerald" },
-  { nome: "Filosofia", icone: "🦉", cor: "indigo" },
-  { nome: "Sociologia", icone: "👥", cor: "rose" },
-  { nome: "Inglês", icone: "🇬🇧", cor: "sky" },
-  { nome: "Espanhol", icone: "🇪🇸", cor: "orange" },
-  { nome: "Francês", icone: "🇫🇷", cor: "violet" },
+  { nome: "Matemática", sigla: "MAT", icone: "🔢", cor: "blue" },
+  { nome: "Português", sigla: "POR", icone: "📖", cor: "yellow" },
+  { nome: "Biologia", sigla: "BIO", icone: "🧬", cor: "green" },
+  { nome: "Química", sigla: "QUI", icone: "⚗️", cor: "purple" },
+  { nome: "Física", sigla: "FIS", icone: "⚛️", cor: "cyan" },
+  { nome: "História", sigla: "HIS", icone: "🏛️", cor: "amber" },
+  { nome: "Geografia", sigla: "GEO", icone: "🌍", cor: "emerald" },
+  { nome: "Filosofia", sigla: "FIL", icone: "🦉", cor: "indigo" },
+  { nome: "Sociologia", sigla: "SOC", icone: "👥", cor: "rose" },
+  { nome: "Inglês", sigla: "ING", icone: "🇬🇧", cor: "sky" },
+  { nome: "Espanhol", sigla: "ESP", icone: "🇪🇸", cor: "orange" },
+  { nome: "Francês", sigla: "FRA", icone: "🇫🇷", cor: "violet" },
 ];
+
+// Sigla curta da matéria (como nas abas do caderno de prova). Para nomes
+// fora da lista, usa as 3 primeiras letras.
+export const siglaDaMateria = (nome = "") =>
+  MATERIAS.find((m) => m.nome === nome)?.sigla ||
+  nome
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .slice(0, 3)
+    .toUpperCase();
 
 // Tipos de conteúdo que o professor pode publicar.
 export const TIPOS_MATERIAL = [

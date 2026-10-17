@@ -35,7 +35,7 @@ function FormularioAlterarSenha({ onFechar }) {
 
   return (
     <div className="p-6 sm:p-8">
-      <span className="mb-5 w-11 h-11 rounded-2xl bg-gold-400/10 border border-gold-400/20 text-gold-400 flex items-center justify-center">
+      <span className="mb-5 w-11 h-11 rounded-2xl bg-gold-400/10 border border-gold-400/20 text-gold-300 flex items-center justify-center">
         <KeyRound size={20} />
       </span>
       <h2 className="font-display text-xl font-black text-white tracking-tight">Alterar senha</h2>

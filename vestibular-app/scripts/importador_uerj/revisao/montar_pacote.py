@@ -1,5 +1,6 @@
 """Passo 4: monta dados/revisao/pacote.json, que o publicar_revisao.py aplica."""
 import collections
+import re
 import json
 import os
 
@@ -17,6 +18,21 @@ AREA = {"Português": "Linguagens", "Inglês": "Linguagens", "Espanhol": "Lingua
         "Matemática": "Matemática", "Física": "Ciências da Natureza", "Química": "Ciências da Natureza",
         "Biologia": "Ciências da Natureza", "História": "Ciências Humanas", "Geografia": "Ciências Humanas",
         "Filosofia": "Ciências Humanas", "Sociologia": "Ciências Humanas"}
+
+def refluir(texto):
+    """Junta as linhas quebradas pelo PDF dentro do mesmo parágrafo. Mantém a
+    quebra quando a linha termina em fim de frase (. : ; ? ! ) ") ou vazia."""
+    saida = []
+    for linha in (texto or "").split("\n"):
+        linha = linha.strip()
+        if not linha:
+            saida.append("")
+        elif saida and saida[-1] and not re.search(r"[.:;?!)\]”\"]$", saida[-1]):
+            saida[-1] += " " + linha
+        else:
+            saida.append(linha)
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(saida)).strip()
+
 
 apoios, atualizar, inserir = [], [], []
 st = collections.Counter()
@@ -55,7 +71,7 @@ for pid, v in R.items():
             resposta = oficial or (d["resposta"] if d else None)
         mudou_disc = (d is None) or (d["disciplina"] != disc)
         campos = {
-            "enunciado": it["enunciado"] or "(ver imagem da questão)",
+            "enunciado": refluir(it["enunciado"]) or "(ver imagem da questão)",
             "alternativas": it["alternativas"] if it["alternativas"] else (
                 [{"letra": l, "texto": ""} for l in "ABCD"] if prova["tipo"] == "qualificacao" else []),
             "resposta": resposta,
@@ -66,6 +82,9 @@ for pid, v in R.items():
             "pagina": it["pagina"],
             "imagens": [],
             "classificada": True,
+            # dá para ler como texto sem perder nada (sem figura e sem fração)
+            "texto_confiavel": bool(it["enunciado"]) and not it["tem_figura"] and not it["tem_formula"]
+            and (bool(it["alternativas"]) or prova["tipo"] != "qualificacao"),
             "recorte_local": os.path.join(pasta, it["arquivo"]),
             "apoios_chaves": [f"{pid}:{a}" for a in it["apoios"]],
         }

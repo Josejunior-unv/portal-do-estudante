@@ -380,7 +380,7 @@ export default function BibliotecaProvas() {
                 className={cx(
                   "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors duration-200",
                   tipoFiltro === t.id
-                    ? "bg-gold-400 text-ink-950"
+                    ? "bg-gold-400 text-sobre-destaque"
                     : "text-ink-400 hover:text-ink-100",
                 )}
               >

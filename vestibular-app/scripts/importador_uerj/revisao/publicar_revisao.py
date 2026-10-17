@@ -26,7 +26,7 @@ PROGRESSO = os.path.join(util.AUDIT, "publicado.json")
 progresso = json.load(open(PROGRESSO, encoding="utf-8")) if os.path.exists(PROGRESSO) else {"arquivos": {}}
 
 CAMPOS = ("enunciado", "alternativas", "resposta", "anulada", "disciplina", "area", "assunto",
-          "pagina", "imagens", "classificada")
+          "pagina", "imagens", "classificada", "texto_confiavel")
 
 
 def salvar_progresso():
@@ -50,7 +50,7 @@ def main():
 
     # 1) estrutura (PARTE 14)
     r = s.get(f"{base}/rest/v1/textos_apoio_uerj?select=id&limit=1")
-    r2 = s.get(f"{base}/rest/v1/questoes_uerj?select=recorte_url,anulada,apoio_ids&limit=1")
+    r2 = s.get(f"{base}/rest/v1/questoes_uerj?select=recorte_url,anulada,apoio_ids,texto_confiavel&limit=1")
     if r.status_code >= 300 or r2.status_code >= 300:
         raise SystemExit("Rode antes a PARTE 14 do supabase_migration.sql no SQL Editor do Supabase.")
 

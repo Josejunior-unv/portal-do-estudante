@@ -162,7 +162,7 @@ export default function ExecutorQuestoes({
               <Trophy size={15} /> Novo recorde pessoal!
             </p>
           )}
-          <p className="font-display text-6xl font-black text-gold-400 tabular-nums">
+          <p className="font-display text-6xl font-black text-gold-300 tabular-nums">
             {resultado.pct}%
           </p>
           <p className="text-ink-400 mt-2">
@@ -218,7 +218,7 @@ export default function ExecutorQuestoes({
   const respostaAtual = questaoAtual ? respostas[questaoAtual.id] : undefined;
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-6xl">
       <button
         onClick={onSair}
         className="inline-flex items-center gap-2 text-ink-400 hover:text-white text-sm font-semibold mb-5 transition-colors"

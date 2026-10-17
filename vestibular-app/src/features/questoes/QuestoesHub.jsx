@@ -1,18 +1,16 @@
 import { lazy, Suspense, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
   FolderOpen,
   GraduationCap,
-  Landmark,
   Loader2,
 } from "lucide-react";
-import { MATERIAS, coresDe } from "@/constants/materias";
+import { MATERIAS } from "@/constants/materias";
+import { AREAS_CONHECIMENTO } from "@/constants/areasConhecimento";
 import { contarQuestoesPorDisciplina } from "@/features/uerj/questoesUerjService";
 import { usePersistedState } from "@/hooks/usePersistedState";
-import { CabecalhoPagina, EstadoVazio, Selo } from "@/components/ui";
-import { cx } from "@/components/ui/cx";
+import { Botao, CabecalhoPagina, EstadoVazio, SeloMateria } from "@/components/ui";
 import { useAuth } from "@/features/auth/useAuth";
 
 const QuestoesEnem = lazy(() => import("@/features/questoes/QuestoesEnem"));
@@ -28,7 +26,7 @@ const BancoQuestoesUerj = lazy(() => import("@/features/uerj/BancoQuestoesUerj")
 
 const CarregandoInterno = ({ texto }) => (
   <div className="mt-16 flex flex-col items-center gap-3 text-ink-400">
-    <Loader2 size={22} className="animate-spin text-gold-400" />
+    <Loader2 size={22} className="animate-spin text-gold-300" />
     <span className="text-sm">{texto}</span>
   </div>
 );
@@ -105,15 +103,12 @@ export default function QuestoesHub() {
           </button>
           <EstadoVazio
             icone={FolderOpen}
-            titulo="Nenhuma questão adicionada ainda"
-            descricao={`As questões de ${pasta} aparecem aqui assim que a equipe importar as provas da UERJ. Enquanto isso, treine no banco oficial do ENEM.`}
+            titulo={`Ainda não há questões de ${pasta}`}
+            descricao="Ainda não há questões dessa matéria no banco. Enquanto isso, treine com as questões do ENEM."
             acao={
-              <button
-                onClick={() => setPasta("enem")}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-gold-400 text-ink-950 hover:bg-gold-300 shadow-[var(--shadow-gold)] transition-all active:scale-[0.97]"
-              >
-                <GraduationCap size={16} /> Treinar no banco ENEM
-              </button>
+              <Botao onClick={() => setPasta("enem")}>
+                <GraduationCap size={16} /> Treinar com questões do ENEM
+              </Botao>
             }
           />
         </div>
@@ -131,158 +126,83 @@ export default function QuestoesHub() {
   }
 
   /* ---------- HUB ---------- */
+  const carregandoContagens = contagens === null;
   return (
-    <div className="max-w-5xl">
+    <div className="max-w-3xl">
       <CabecalhoPagina
         titulo="Questões"
-        descricao="Escolha uma pasta para treinar — o banco oficial do ENEM completo e as questões das provas da UERJ, organizadas por matéria."
+        descricao="Escolha a matéria. Cada questão aparece como na prova, com o texto de apoio e o gabarito oficial da UERJ."
       />
 
-      {/* DESTAQUE — Central UERJ */}
-      <motion.button
-        type="button"
-        onClick={() => setPasta("uerj")}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="group relative w-full text-left overflow-hidden p-6 sm:p-8 rounded-3xl mb-5
-                   bg-ink-900 border border-gold-400/40 shadow-[var(--shadow-card)]
-                   transition-all duration-300 hover:border-gold-400/70 hover:-translate-y-0.5"
-      >
-        <div
-          aria-hidden
-          className="absolute -top-16 -right-16 w-56 h-56 rounded-full opacity-[0.1] blur-3xl pointer-events-none transition-opacity duration-300 group-hover:opacity-[0.18]"
-          style={{
-            background:
-              "radial-gradient(circle, var(--color-gold-400) 0%, transparent 70%)",
-          }}
-        />
-        <div className="relative flex items-center gap-5 flex-wrap">
-          <span className="w-14 h-14 shrink-0 rounded-2xl bg-gold-400 text-ink-950 flex items-center justify-center shadow-[var(--shadow-gold)] transition-transform duration-300 group-hover:scale-105">
-            <Landmark size={26} strokeWidth={2} />
-          </span>
-          <div className="flex-1 min-w-[200px]">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="font-display text-xl font-black text-white tracking-tight">
-                Central UERJ
-              </h2>
-              <Selo variante="solido">
-                {totalUerj > 0 ? `${totalUerj} questões` : "Novo"}
-              </Selo>
-            </div>
-            <p className="text-sm text-ink-400 mt-1.5 max-w-lg">
-              Banco de questões interativo, provas completas para resolver
-              online, simulados personalizados e os PDFs oficiais.
-            </p>
-          </div>
-          <span className="inline-flex items-center gap-1.5 text-sm font-bold text-gold-300 group-hover:gap-3 transition-all">
-            Abrir central <ArrowRight size={16} />
-          </span>
-        </div>
-      </motion.button>
+      {AREAS_CONHECIMENTO.map((area) => {
+        const materias = MATERIAS.filter((m) => area.disciplinas.includes(m.nome));
+        if (!materias.length) return null;
+        return (
+          <section key={area.id} className="mb-8">
+            <h2 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-ink-400 mb-2">
+              {area.nome}
+            </h2>
+            <ul className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+              {materias.map((m) => {
+                const qtd = contagens?.[m.nome] ?? 0;
+                return (
+                  <li key={m.nome}>
+                    <button
+                      type="button"
+                      onClick={() => setPasta(m.nome)}
+                      className="group w-full flex items-center gap-4 py-3 text-left"
+                    >
+                      <SeloMateria sigla={m.sigla} />
+                      <span className="flex-1 font-bold text-white group-hover:underline underline-offset-4 decoration-2 decoration-gold-400">
+                        {m.nome}
+                      </span>
+                      <span className="font-mono text-sm text-ink-400 tabular-nums">
+                        {carregandoContagens ? "…" : qtd === 0 ? "sem questões" : `${qtd} ${qtd === 1 ? "questão" : "questões"}`}
+                      </span>
+                      <ArrowRight size={16} className="text-ink-500 transition-transform group-hover:translate-x-1 group-hover:text-white" />
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
 
-      {/* DESTAQUE — banco ENEM */}
-      <motion.button
-        type="button"
-        onClick={() => setPasta("enem")}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.08, duration: 0.4, ease: "easeOut" }}
-        className="group relative w-full text-left overflow-hidden p-6 sm:p-8 rounded-3xl mb-10
-                   bg-ink-900 border border-gold-400/25 shadow-[var(--shadow-card)]
-                   transition-all duration-300 hover:border-gold-400/50 hover:-translate-y-0.5"
-      >
-        <div
-          aria-hidden
-          className="absolute -top-16 -right-16 w-56 h-56 rounded-full opacity-[0.08] blur-3xl pointer-events-none transition-opacity duration-300 group-hover:opacity-[0.14]"
-          style={{
-            background:
-              "radial-gradient(circle, var(--color-gold-400) 0%, transparent 70%)",
-          }}
-        />
-        <div className="relative flex items-center gap-5 flex-wrap">
-          <span className="w-14 h-14 shrink-0 rounded-2xl bg-gold-400 text-ink-950 flex items-center justify-center shadow-[var(--shadow-gold)] transition-transform duration-300 group-hover:scale-105">
-            <GraduationCap size={26} strokeWidth={2} />
-          </span>
-          <div className="flex-1 min-w-[200px]">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="font-display text-xl font-black text-white tracking-tight">
-                Banco oficial do ENEM
-              </h2>
-              <Selo variante="ouro">15 provas · 2009–2023</Selo>
-            </div>
-            <p className="text-sm text-ink-400 mt-1.5 max-w-lg">
-              Milhares de questões com correção instantânea, filtros por área e
-              dificuldade, e estatísticas automáticas.
-            </p>
-          </div>
-          <span className="inline-flex items-center gap-1.5 text-sm font-bold text-gold-300 group-hover:gap-3 transition-all">
-            Abrir banco <ArrowRight size={16} />
-          </span>
-        </div>
-      </motion.button>
-
-      {/* PASTAS POR MATÉRIA */}
-      <p className="text-[11px] uppercase tracking-widest font-bold text-ink-500 mb-4">
-        Questões da UERJ por matéria
-      </p>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-        <AnimatePresence initial={false}>
-          {MATERIAS.map((m, i) => {
-            const c = coresDe(m.cor);
-            const qtd = contagens?.[m.nome] ?? 0;
-            return (
-              <motion.button
-                key={m.nome}
-                type="button"
-                onClick={() => setPasta(m.nome)}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: Math.min(i * 0.04, 0.35), duration: 0.3 }}
-                whileTap={{ scale: 0.97 }}
-                className={cx(
-                  "group relative overflow-hidden text-left p-5 rounded-3xl bg-ink-900 border shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1",
-                  c.borda,
-                  c.hover,
-                )}
-              >
-                <div
-                  className={cx(
-                    "absolute -top-10 -right-10 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                    c.fundo,
-                  )}
-                />
-                <div className="relative">
-                  <div
-                    className={cx(
-                      "w-12 h-12 mb-4 inline-flex items-center justify-center rounded-2xl text-2xl transition-transform duration-300 group-hover:scale-110",
-                      c.fundo,
-                    )}
-                  >
-                    {m.icone}
-                  </div>
-                  <h3 className="font-bold text-white leading-tight">
-                    {m.nome}
-                  </h3>
-                  <p className="text-xs text-ink-500 mt-1 tabular-nums">
-                    {qtd === 0
-                      ? "Nenhuma questão adicionada"
-                      : `${qtd} ${qtd === 1 ? "questão" : "questões"}`}
-                  </p>
-                  <span
-                    className={cx(
-                      "inline-flex items-center gap-1 mt-3 text-xs font-bold transition-all group-hover:gap-2",
-                      c.texto,
-                    )}
-                  >
-                    Abrir <ArrowRight size={13} />
-                  </span>
-                </div>
-              </motion.button>
-            );
-          })}
-        </AnimatePresence>
-      </div>
+      <section className="mt-12">
+        <h2 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-ink-400 mb-2">
+          Outros jeitos de treinar
+        </h2>
+        <ul className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+          <li>
+            <button type="button" onClick={() => setPasta("uerj")} className="group w-full flex items-center gap-4 py-4 text-left">
+              <span className="flex-1">
+                <span className="block font-bold text-white group-hover:underline underline-offset-4 decoration-2 decoration-gold-400">
+                  Provas completas da UERJ
+                </span>
+                <span className="block text-sm text-ink-400 mt-0.5">
+                  Resolva uma prova inteira, monte simulados e veja seu desempenho
+                  {totalUerj > 0 ? ` (${totalUerj} questões de 2013 a 2027)` : ""}.
+                </span>
+              </span>
+              <ArrowRight size={16} className="text-ink-500 transition-transform group-hover:translate-x-1 group-hover:text-white" />
+            </button>
+          </li>
+          <li>
+            <button type="button" onClick={() => setPasta("enem")} className="group w-full flex items-center gap-4 py-4 text-left">
+              <span className="flex-1">
+                <span className="block font-bold text-white group-hover:underline underline-offset-4 decoration-2 decoration-gold-400">
+                  Questões do ENEM
+                </span>
+                <span className="block text-sm text-ink-400 mt-0.5">
+                  Provas de 2009 a 2023, com filtro por área e dificuldade.
+                </span>
+              </span>
+              <ArrowRight size={16} className="text-ink-500 transition-transform group-hover:translate-x-1 group-hover:text-white" />
+            </button>
+          </li>
+        </ul>
+      </section>
     </div>
   );
 }

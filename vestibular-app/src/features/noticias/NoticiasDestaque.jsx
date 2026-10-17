@@ -41,7 +41,7 @@ export default function NoticiasDestaque() {
   return (
     <section className="mb-10">
       <div className="flex items-center gap-2.5 mb-4">
-        <Newspaper size={18} className="text-gold-400" />
+        <Newspaper size={18} className="text-gold-300" />
         <h2 className="text-xl font-black text-white tracking-tight font-display">
           Novidades
         </h2>

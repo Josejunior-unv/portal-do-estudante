@@ -157,7 +157,7 @@ function Login() {
           style={{ background: 'radial-gradient(circle, #F5C042 0%, transparent 70%)' }}
         />
 
-        <div className="relative z-10 flex items-center gap-2 text-gold-400">
+        <div className="relative z-10 flex items-center gap-2 text-gold-300">
           <Flame size={20} strokeWidth={2.5} />
           <span className="font-display font-bold tracking-wide text-sm text-ink-200 uppercase">
             Pré-Vestibular UERJ Para Todos
@@ -196,7 +196,7 @@ function Login() {
               transition={{ delay: 0.25 + i * 0.12, duration: 0.5 }}
               className="flex items-start gap-3.5"
             >
-              <span className="mt-0.5 w-9 h-9 shrink-0 rounded-xl bg-gold-400/10 border border-gold-400/20 text-gold-400 flex items-center justify-center">
+              <span className="mt-0.5 w-9 h-9 shrink-0 rounded-xl bg-gold-400/10 border border-gold-400/20 text-gold-300 flex items-center justify-center">
                 <p.icone size={17} strokeWidth={2} />
               </span>
               <div>
@@ -240,7 +240,7 @@ function Login() {
                 type="button"
                 onClick={() => trocarModo(m)}
                 className={`relative flex-1 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                  modo === m ? 'text-ink-950' : 'text-ink-400 hover:text-ink-200'
+                  modo === m ? 'text-sobre-destaque' : 'text-ink-400 hover:text-ink-200'
                 }`}
               >
                 {modo === m && (

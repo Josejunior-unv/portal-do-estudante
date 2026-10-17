@@ -435,6 +435,38 @@ def texto_dos_blocos(doc, blocos, ignorar):
     return linhas_txt
 
 
+def avaliar_conteudo(doc, blocos, ignorar):
+    """(tem_figura, tem_formula) dentro dos blocos de uma questão.
+
+    tem_formula = barra de fração: traço horizontal curto com texto logo
+    ACIMA e logo ABAIXO (um sublinhado só tem texto acima). Questão sem
+    figura e sem fórmula pode ser lida como texto sem perder nada.
+    """
+    figura = formula = False
+    for b in blocos:
+        linhas, figuras = _elementos(doc[b.pagina], b.rect, ignorar.get(b.pagina, []))
+        for f in figuras:
+            if f.width > 40 and f.height > 25:
+                figura = True
+            elif f.height < 2.5 and 4 < f.width < 140:
+                acima = any(r.y1 <= f.y0 + 1 and f.y0 - r.y1 < 12 and min(r.x1, f.x1) - max(r.x0, f.x0) > 2 for r, _ in linhas)
+                abaixo = any(r.y0 >= f.y1 - 1 and r.y0 - f.y1 < 12 and min(r.x1, f.x1) - max(r.x0, f.x0) > 2 for r, _ in linhas)
+                if acima and abaixo:
+                    formula = True
+        if any(ch in "√∫∑∏" for _, sp in linhas for s in sp for ch in s["text"]):
+            formula = True
+    # Sinais no TEXTO de fração empilhada: linha só com um número curto
+    # ("1" numa linha, "2" na outra) ou expoente solto antes de vírgula/
+    # espaço+número ("(¹, ¹ ," / "¹²ᶜ 13").
+    for t in texto_dos_blocos(doc, blocos, ignorar):
+        t = t.strip()
+        if re.fullmatch(r"[\dA-Za-zπ⁰¹²³⁴⁵⁶⁷⁸⁹ᶜ+\-−]{1,4}", t) and not RE_ALT.match(t):
+            formula = True
+        if re.search(r"[⁰¹²³⁴⁵⁶⁷⁸⁹]\s*[,)]|[⁰¹²³⁴⁵⁶⁷⁸⁹ᶜ]\s+\d", t):
+            formula = True
+    return figura, formula
+
+
 def separar_alternativas(linhas):
     enunciado, alts, atual = [], [], None
     quebradas = []
@@ -509,7 +541,9 @@ def analisar(caminho_pdf, objetiva=True, area_idioma_da_pagina=None):
             q.area, q.idioma = area_idioma_da_pagina(q.selo.pagina)
         linhas = texto_dos_blocos(doc, q.blocos, ignorar)
         enunciado, alts = separar_alternativas(linhas)
-        q.texto = {"enunciado": enunciado, "alternativas": alts}
+        figura, formula = avaliar_conteudo(doc, q.blocos, ignorar)
+        q.texto = {"enunciado": enunciado, "alternativas": alts,
+                   "tem_figura": figura, "tem_formula": formula}
         chave = (q.area, q.idioma)
         explicitos = [i for i, nums, ctx in faixas
                       if q.numero in nums and (ctx[1] is None or ctx[1] == q.idioma)]

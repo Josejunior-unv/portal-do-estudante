@@ -222,7 +222,7 @@ export default function PainelAdmin() {
         </h1>
         <p className="text-ink-400 mt-1">
           Publique materiais por matéria — aparecem automaticamente em{" "}
-          <span className="text-gold-400 font-semibold">Minhas Tarefas</span> dos
+          <span className="text-gold-300 font-semibold">Minhas Tarefas</span> dos
           alunos.
         </p>
       </motion.div>
@@ -240,7 +240,7 @@ export default function PainelAdmin() {
             onClick={() => setSecao(s.id)}
             className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all ${
               secao === s.id
-                ? "bg-gold-400 text-ink-950"
+                ? "bg-gold-400 text-sobre-destaque"
                 : "text-ink-400 hover:text-white"
             }`}
           >
@@ -307,7 +307,7 @@ export default function PainelAdmin() {
                   onClick={() => atualizarCampo("tipo", t.id)}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold border transition-all active:scale-95 ${
                     tipoAtual === t.id
-                      ? "bg-gold-400 text-ink-950 border-gold-400 shadow-[var(--shadow-gold)]"
+                      ? "bg-gold-400 text-sobre-destaque border-gold-400 shadow-[var(--shadow-gold)]"
                       : "bg-ink-800/50 text-ink-300 border-ink-700 hover:border-gold-400/40"
                   }`}
                 >
@@ -333,7 +333,7 @@ export default function PainelAdmin() {
                     type="file"
                     accept="application/pdf"
                     onChange={(e) => setArquivo(e.target.files?.[0] || null)}
-                    className="block w-full text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-gold-400 file:text-ink-950 hover:file:bg-gold-300 file:cursor-pointer cursor-pointer"
+                    className="block w-full text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-gold-400 file:text-sobre-destaque hover:file:bg-gold-300 file:cursor-pointer cursor-pointer"
                   />
                   {arquivo && (
                     <p className="text-xs text-ink-400 mt-2">
@@ -421,7 +421,7 @@ export default function PainelAdmin() {
                 <button
                   type="submit"
                   disabled={salvando}
-                  className={`bg-gold-400 hover:bg-gold-300 text-ink-950 font-bold py-3 px-7 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-95 ${
+                  className={`bg-gold-400 hover:bg-gold-300 text-sobre-destaque font-bold py-3 px-7 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-95 ${
                     salvando ? "opacity-60 cursor-wait" : ""
                   }`}
                 >
@@ -520,7 +520,7 @@ export default function PainelAdmin() {
                         <button
                           onClick={() => iniciarEdicao(m)}
                           title="Editar"
-                          className="text-ink-500 hover:text-gold-400 p-1.5 rounded-lg hover:bg-white/[0.05] transition-colors"
+                          className="text-ink-500 hover:text-gold-300 p-1.5 rounded-lg hover:bg-white/[0.05] transition-colors"
                         >
                           <Pencil size={15} />
                         </button>

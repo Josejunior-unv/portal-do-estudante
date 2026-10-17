@@ -181,7 +181,7 @@ export default function Estatisticas() {
           valor={g.taxaAcerto}
           sufixo="%"
           rotulo="Aproveitamento geral"
-          cor="text-gold-400"
+          cor="text-gold-300"
         />
         <CardKPI
           valor={g.totalQuestoes}
@@ -192,7 +192,7 @@ export default function Estatisticas() {
         <CardKPI
           valor={g.mediaDia}
           rotulo="Média por dia"
-          cor="text-gold-400"
+          cor="text-gold-300"
           sub={`${g.diasAtivos} dias ativos`}
         />
         <CardKPI
@@ -317,7 +317,7 @@ export default function Estatisticas() {
         <div className="bg-ink-950/50 p-6 rounded-3xl border border-white/5 mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
             <h3 className="text-ink-300 font-semibold">Progresso das tarefas</h3>
-            <span className="text-gold-400 font-black text-lg">{tarefas.pct}%</span>
+            <span className="text-gold-300 font-black text-lg">{tarefas.pct}%</span>
           </div>
           <div className="w-full h-2 bg-ink-800 rounded-full overflow-hidden mb-5">
             <motion.div
@@ -421,7 +421,7 @@ export default function Estatisticas() {
             <button
               type="submit"
               disabled={isSaving}
-              className={`bg-gold-400 hover:bg-gold-300 text-ink-950 font-bold py-3 px-8 rounded-xl transition-all shadow-[var(--shadow-gold)] ${isSaving ? "opacity-50 cursor-wait" : ""}`}
+              className={`bg-gold-400 hover:bg-gold-300 text-sobre-destaque font-bold py-3 px-8 rounded-xl transition-all shadow-[var(--shadow-gold)] ${isSaving ? "opacity-50 cursor-wait" : ""}`}
             >
               {isSaving ? "Registrando..." : "Salvar Sessão"}
             </button>

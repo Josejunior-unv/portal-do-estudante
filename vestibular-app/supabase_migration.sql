@@ -421,6 +421,9 @@ create policy "respostas select proprio" on public.questoes_respondidas
 alter table public.questoes_uerj add column if not exists recorte_url text;
 alter table public.questoes_uerj add column if not exists anulada boolean not null default false;
 alter table public.questoes_uerj add column if not exists apoio_ids bigint[] not null default '{}';
+-- Sem figura nem fórmula: no celular a questão abre como texto (a imagem da
+-- prova encolhida fica ilegível em tela estreita).
+alter table public.questoes_uerj add column if not exists texto_confiavel boolean not null default false;
 
 -- 14b) Textos de apoio (texto-base, charge, gráfico...) compartilhados por uma
 --      ou mais questões da mesma prova. `imagens` = recortes, em ordem; `texto`

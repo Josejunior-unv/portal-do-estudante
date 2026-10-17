@@ -53,7 +53,7 @@ export default function OnboardingLayout({
                       concluido
                         ? "bg-emerald-500 border-emerald-500 text-white"
                         : ativo
-                          ? "bg-gold-400 border-gold-400 text-ink-950 shadow-[var(--shadow-gold)]"
+                          ? "bg-gold-400 border-gold-400 text-sobre-destaque shadow-[var(--shadow-gold)]"
                           : "bg-ink-900 border-ink-700 text-ink-500"
                     }`}
                   >

@@ -313,7 +313,7 @@ function QuestoesEnem({ userId }) {
               <Indicador
                 valor={`${progresso.pctAcerto}%`}
                 rotulo="Aprov."
-                cor="text-gold-400"
+                cor="text-gold-300"
               />
             </div>
           </div>
@@ -407,7 +407,7 @@ function QuestoesEnem({ userId }) {
                         className={cx(
                           "flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all active:scale-95",
                           ativo
-                            ? "bg-gold-400 text-ink-950 border-gold-400 shadow-[var(--shadow-gold)]"
+                            ? "bg-gold-400 text-sobre-destaque border-gold-400 shadow-[var(--shadow-gold)]"
                             : desabilitado
                               ? "bg-ink-900/40 text-ink-600 border-white/[0.04] cursor-not-allowed"
                               : "bg-white/[0.03] text-ink-300 border-white/[0.08] hover:border-gold-400/40 hover:text-white",
@@ -418,7 +418,7 @@ function QuestoesEnem({ userId }) {
                           className={cx(
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md tabular-nums",
                             ativo
-                              ? "bg-ink-950/15 text-ink-950"
+                              ? "bg-black/10 text-sobre-destaque"
                               : "bg-ink-950 text-ink-400",
                           )}
                         >

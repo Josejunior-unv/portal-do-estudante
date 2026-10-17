@@ -56,7 +56,7 @@ function Chip({ ativo, onClick, children }) {
       onClick={onClick}
       className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all active:scale-95 ${
         ativo
-          ? "bg-gold-400 text-ink-950 border-gold-400 shadow-[var(--shadow-gold)]"
+          ? "bg-gold-400 text-sobre-destaque border-gold-400 shadow-[var(--shadow-gold)]"
           : "bg-ink-800/40 text-ink-300 border-ink-700/60 hover:border-gold-400/40 hover:text-white"
       }`}
     >
@@ -449,7 +449,7 @@ export default function Simulado() {
               type="button"
               onClick={iniciarSimulado}
               disabled={carregando}
-              className="w-full bg-gold-400 hover:bg-gold-300 text-ink-950 font-bold py-3.5 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-[0.99] disabled:opacity-60 disabled:cursor-wait"
+              className="w-full bg-gold-400 hover:bg-gold-300 text-sobre-destaque font-bold py-3.5 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-[0.99] disabled:opacity-60 disabled:cursor-wait"
             >
               {carregando ? "Preparando questões..." : "Iniciar simulado"}
             </button>
@@ -470,7 +470,7 @@ export default function Simulado() {
                 <p className="text-[10px] uppercase tracking-wider text-ink-500 font-bold">Recorde</p>
               </div>
               <div>
-                <p className="text-2xl font-black text-gold-400">{resumo.mediaPct}%</p>
+                <p className="text-2xl font-black text-gold-300">{resumo.mediaPct}%</p>
                 <p className="text-[10px] uppercase tracking-wider text-ink-500 font-bold">Média</p>
               </div>
             </div>
@@ -478,7 +478,7 @@ export default function Simulado() {
 
           <div className="p-6 rounded-2xl bg-ink-900/60 border border-ink-800">
             <h3 className="flex items-center gap-2 text-sm font-bold text-ink-200 mb-4">
-              <Trophy size={15} className="text-gold-400" /> Ranking pessoal
+              <Trophy size={15} className="text-gold-300" /> Ranking pessoal
             </h3>
             {top.length === 0 ? (
               <p className="text-ink-600 text-sm">Faça um simulado para entrar no ranking.</p>
@@ -705,7 +705,7 @@ export default function Simulado() {
             <button
               type="button"
               onClick={proxima}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border border-gold-400 bg-gold-400 text-ink-950 hover:bg-gold-300 shadow-[var(--shadow-gold)] transition active:scale-95"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border border-gold-400 bg-gold-400 text-sobre-destaque hover:bg-gold-300 shadow-[var(--shadow-gold)] transition active:scale-95"
             >
               Próxima →
             </button>
@@ -767,7 +767,7 @@ export default function Simulado() {
             <div className="text-6xl mb-2" aria-hidden>—</div>
           )}
 
-          <p className="text-6xl font-black text-gold-400">
+          <p className="text-6xl font-black text-gold-300">
             {r.pct}%
           </p>
           <p className="text-ink-400 mt-1">
@@ -802,7 +802,7 @@ export default function Simulado() {
             { v: r.acertos, l: "Acertos", c: "text-emerald-400" },
             { v: r.erros, l: "Erros", c: "text-rose-400" },
             { v: r.emBranco, l: "Em branco", c: "text-ink-300" },
-            { v: formatarTempo(r.tempoSegundos), l: "Tempo", c: "text-gold-400" },
+            { v: formatarTempo(r.tempoSegundos), l: "Tempo", c: "text-gold-300" },
           ].map((x) => (
             <div key={x.l} className="p-4 rounded-2xl bg-ink-900/60 border border-ink-800 text-center">
               <p className={`text-2xl font-black ${x.c}`}>{x.v}</p>
@@ -872,7 +872,7 @@ export default function Simulado() {
           <button
             type="button"
             onClick={refazer}
-            className="flex-1 min-w-[140px] py-3 rounded-xl text-sm font-bold border border-gold-400 bg-gold-400 text-ink-950 hover:bg-gold-300 transition active:scale-95 shadow-[var(--shadow-gold)]"
+            className="flex-1 min-w-[140px] py-3 rounded-xl text-sm font-bold border border-gold-400 bg-gold-400 text-sobre-destaque hover:bg-gold-300 transition active:scale-95 shadow-[var(--shadow-gold)]"
           >
             🔁 Refazer igual
           </button>

@@ -11,7 +11,6 @@ import {
   ExternalLink,
   Download,
   FilterX,
-  Image as ImageIcon,
   FileQuestion,
   Timer,
 } from "lucide-react";
@@ -32,7 +31,7 @@ import {
 import { AREAS_CONHECIMENTO, areaPorId } from "@/constants/areasConhecimento";
 import {
   Botao,
-  Selo,
+  Bolha,
   CampoSelect,
   EstadoVazio,
   Esqueleto,
@@ -57,12 +56,6 @@ const FILTROS_PADRAO = {
 
 const filtrosGuardados = () => lerJSON(CHAVE_FILTROS, {});
 
-const PONTO_DIFICULDADE = {
-  facil: "text-emerald-400",
-  media: "text-amber-400",
-  dificil: "text-rose-400",
-};
-const ROTULO_DIFICULDADE = { facil: "Fácil", media: "Média", dificil: "Difícil" };
 
 /* ================= PÁGINA DA QUESTÃO ================= */
 
@@ -80,7 +73,8 @@ function PaginaQuestao({ questao, userId, onVoltar, onNavegar, posicao, total })
     inicioRef.current = Date.now();
   }, []);
 
-  const temGabarito = !!questao.resposta;
+  // Anulada pela UERJ: sem resposta oficial (não conta acerto nem erro).
+  const temGabarito = !!questao.resposta && !questao.anulada;
   const favorita = estudo.favoritas.includes(questao.id);
   const paraRevisar = estudo.revisar.includes(questao.id);
 
@@ -117,7 +111,7 @@ function PaginaQuestao({ questao, userId, onVoltar, onNavegar, posicao, total })
   const prova = questao.prova;
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-6xl">
       <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
         <button
           onClick={onVoltar}
@@ -148,46 +142,29 @@ function PaginaQuestao({ questao, userId, onVoltar, onNavegar, posicao, total })
         </div>
       </div>
 
-      {/* Metadados da questão */}
-      <div className="flex items-center gap-1.5 flex-wrap mb-4">
-        {prova?.ano > 0 && <Selo variante="ouro">UERJ {prova.ano}</Selo>}
-        {prova?.fase && <Selo>{prova.fase}</Selo>}
-        <Selo>
-          {prova?.tipo === "discursivo" ? "Discursiva" : "Objetiva"}
-        </Selo>
-        {questao.assunto && questao.assunto !== "Não Classificado" && (
-          <Selo>{questao.assunto}</Selo>
-        )}
-        {questao.dificuldade && (
-          <Selo>
-            <span className={cx("text-[8px]", PONTO_DIFICULDADE[questao.dificuldade])}>
-              ●
-            </span>
-            {ROTULO_DIFICULDADE[questao.dificuldade]}
-          </Selo>
-        )}
+      {/* Contexto da questão (o resto está no cabeçalho do cartão) */}
+      <p className="mb-3 text-sm text-ink-400">
+        {prova?.titulo || (prova?.ano > 0 ? `UERJ ${prova.ano}` : "UERJ")}
+        {questao.assunto && questao.assunto !== "Não Classificado" && ` · ${questao.assunto}`}
         {tempoGasto !== null && (
-          <Selo>
-            <Timer size={11} /> {tempoGasto}s
-          </Selo>
+          <span className="inline-flex items-center gap-1 ml-2 align-middle">
+            · <Timer size={12} /> {tempoGasto}s
+          </span>
         )}
-      </div>
+      </p>
 
       <QuestaoCard
         questao={adaptarParaCard(questao)}
+        dificuldade={questao.dificuldade}
         resposta={resposta}
         onResponder={resposta ? undefined : responder}
         revelar={!!resposta && temGabarito}
       />
 
-      {resposta && !temGabarito && (
+      {resposta && !temGabarito && !questao.anulada && prova?.tipo !== "discursivo" && (
         <Alerta variante="neutro" className="mt-3">
-          Resposta registrada: alternativa {resposta}. Esta questão ainda não
-          tem gabarito oficial importado
-          {prova?.tipo === "discursivo"
-            ? " — consulte o padrão de resposta da prova"
-            : ""}
-          .
+          Resposta registrada: alternativa {resposta}. Esta prova não tem gabarito
+          oficial no banco.
         </Alerta>
       )}
 
@@ -433,7 +410,7 @@ export default function BancoQuestoesUerj({
       <AvisoUerj />
 
       {/* FILTROS */}
-      <div className="p-4 rounded-2xl bg-ink-900 border border-white/[0.08] shadow-[var(--shadow-card)] mb-6 space-y-3">
+      <div className="mb-6 space-y-3">
         <div className="relative">
           <Search
             size={16}
@@ -511,15 +488,6 @@ export default function BancoQuestoesUerj({
             <option value="media">Média</option>
             <option value="dificil">Difícil</option>
           </CampoSelect>
-          <label className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-300 cursor-pointer select-none px-2 py-2">
-            <input
-              type="checkbox"
-              checked={filtros.comImagem}
-              onChange={(e) => definirFiltro("comImagem", e.target.checked)}
-              className="accent-gold-400"
-            />
-            <ImageIcon size={13} /> Com imagem
-          </label>
         </div>
 
         {/* Status chips */}
@@ -532,7 +500,7 @@ export default function BancoQuestoesUerj({
                 className={cx(
                   "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors duration-200",
                   filtros.status === s.id
-                    ? "bg-gold-400 text-ink-950"
+                    ? "bg-gold-400 text-sobre-destaque"
                     : "text-ink-400 hover:text-ink-100",
                 )}
               >
@@ -571,72 +539,54 @@ export default function BancoQuestoesUerj({
         />
       ) : (
         <>
-          <div className="space-y-3">
-            <AnimatePresence initial={false}>
-              {itens.map((q, i) => {
-                const registro = estudo.respostas[q.id];
-                const favorita = estudo.favoritas.includes(q.id);
-                return (
-                  <motion.button
-                    key={q.id}
-                    layout
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
+          <ul className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+            {itens.map((q, i) => {
+              const registro = estudo.respostas[q.id];
+              const favorita = estudo.favoritas.includes(q.id);
+              const estado = !registro
+                ? "vazia"
+                : registro.acertou === true
+                  ? "certa"
+                  : registro.acertou === false
+                    ? "errada"
+                    : "marcada";
+              const situacao = !registro
+                ? "não respondida"
+                : registro.acertou === true
+                  ? "você acertou"
+                  : registro.acertou === false
+                    ? "você errou"
+                    : `você marcou ${registro.letra}`;
+              return (
+                <li key={q.id}>
+                  <button
                     onClick={() => abrirPosicao(pagina * POR_PAGINA + i)}
-                    className="group w-full text-left p-4 sm:p-5 rounded-2xl bg-ink-900 border border-white/[0.08]
-                               shadow-[var(--shadow-card)] transition-all duration-300 hover:border-gold-400/30 hover:-translate-y-0.5"
+                    className="group w-full flex items-start gap-4 py-4 text-left"
                   >
-                    <div className="flex items-center gap-1.5 flex-wrap mb-2">
-                      {q.prova?.ano > 0 && (
-                        <Selo variante="ouro">UERJ {q.prova.ano}</Selo>
-                      )}
-                      {q.disciplina && q.disciplina !== "Não Classificada" && (
-                        <Selo>{q.disciplina}</Selo>
-                      )}
-                      {q.dificuldade && (
-                        <Selo>
-                          <span
-                            className={cx(
-                              "text-[8px]",
-                              PONTO_DIFICULDADE[q.dificuldade],
-                            )}
-                          >
-                            ●
-                          </span>
-                          {ROTULO_DIFICULDADE[q.dificuldade]}
-                        </Selo>
-                      )}
-                      {Array.isArray(q.imagens) && q.imagens.length > 0 && (
-                        <Selo>
-                          <ImageIcon size={11} /> figura
-                        </Selo>
-                      )}
-                      <span className="ml-auto flex items-center gap-1.5">
-                        {favorita && (
-                          <Star size={14} className="text-gold-400 fill-current" />
-                        )}
-                        {registro &&
-                          (registro.acertou === true ? (
-                            <Selo variante="sucesso">acertou</Selo>
-                          ) : registro.acertou === false ? (
-                            <Selo variante="erro">errou</Selo>
-                          ) : (
-                            <Selo>respondida</Selo>
-                          ))}
+                    <Bolha
+                      estado={estado}
+                      letra={estado === "certa" ? "✓" : estado === "errada" ? "✕" : String(q.numero).padStart(2, "0")}
+                      tamanho="md"
+                      className="mt-0.5 text-xs"
+                    />
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-xs text-ink-400 mb-1">
+                        Questão {q.numero} · {q.prova?.titulo || (q.prova?.ano > 0 ? `UERJ ${q.prova.ano}` : "UERJ")}
+                        {q.disciplina && ` · ${q.disciplina}`} · {situacao}
+                        {q.anulada && " · anulada"}
                       </span>
-                    </div>
-                    <p className="text-sm text-ink-200 line-clamp-2 leading-6">
-                      <span className="font-bold text-white">
-                        Questão {q.numero}.
-                      </span>{" "}
-                      {q.enunciado}
-                    </p>
-                  </motion.button>
-                );
-              })}
-            </AnimatePresence>
-          </div>
+                      <span className="block text-[15px] text-ink-100 line-clamp-2 leading-6 group-hover:text-white">
+                        {q.enunciado}
+                      </span>
+                    </span>
+                    {favorita && (
+                      <Star size={15} className="mt-1 text-gold-300 fill-current shrink-0" aria-label="favorita" />
+                    )}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
 
           {/* PAGINAÇÃO */}
           {totalPaginas > 1 && (
