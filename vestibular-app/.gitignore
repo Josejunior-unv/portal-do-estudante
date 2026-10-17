@@ -32,3 +32,6 @@ dist-ssr
 scripts/importador_uerj/dados/
 scripts/importador_uerj/__pycache__/
 CLAUDE.md
+
+# Screenshots do teste de fumaça E2E
+scripts/e2e/screenshots/

@@ -1,0 +1,12 @@
+# Dependências (o app fica em vestibular-app/, com o próprio package.json)
+node_modules/
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Sistema/editor
+.DS_Store
+Thumbs.db
+.idea/

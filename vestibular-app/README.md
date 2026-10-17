@@ -12,7 +12,7 @@ automáticas de desempenho.
 - **Frontend:** React 19 + Vite 8 + Tailwind CSS v4 (tokens no `@theme` de
   `src/index.css`), framer-motion, recharts, lucide-react, react-router.
 - **Backend:** Supabase (Auth + Postgres com RLS + Storage). Cliente em
-  `src/SUPABASE.js` — a chave anon/publishable é pública por design; a
+  `src/lib/supabase.js` — a chave anon/publishable é pública por design; a
   segurança real é feita pelas políticas de RLS (`supabase_migration.sql`).
 - **Questões ENEM:** API pública `api.enem.dev`.
 - **Questões UERJ:** pipeline offline em Python (`scripts/importador_uerj/`)
@@ -29,8 +29,13 @@ npm run dev            # http://localhost:5173
 Antes de commitar:
 
 ```bash
-npm run lint && npm run build
+npm run verificar      # lint + testes (Vitest) + build
+python scripts/e2e/smoke.py   # opcional: todas as telas com o Supabase simulado
 ```
+
+Estrutura do código, fluxo da sessão e regras da casa:
+[`docs/ARQUITETURA.md`](docs/ARQUITETURA.md). O CI do GitHub roda lint,
+testes e build a cada push.
 
 ## Banco de dados
 
@@ -51,6 +56,13 @@ trecho deixa políticas antigas ativas). Partes principais:
 O cadastro cria sempre `aluno`. A promoção para `admin` é feita pela aba
 **👥 Usuários** do Painel do Admin (RPCs SECURITY DEFINER — um admin não
 consegue rebaixar a si mesmo).
+
+## Senhas
+
+Recuperação por e-mail ("Esqueceu a senha?" no login → link → `/redefinir-senha`)
+e troca de senha de dentro do app ("Alterar senha"). Requer configurar as
+Redirect URLs e um SMTP no Supabase — passo a passo em
+[`docs/AUTENTICACAO_EMAIL.md`](docs/AUTENTICACAO_EMAIL.md).
 
 ## Importador de provas da UERJ
 

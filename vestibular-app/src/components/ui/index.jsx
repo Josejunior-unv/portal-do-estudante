@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sun, Moon } from "lucide-react";
-import { cx } from "./cx";
-import { useTema } from "../../hooks/useTema";
+import { X, Sun, Moon, Eye, EyeOff } from "lucide-react";
+import { cx } from "@/components/ui/cx";
+import { useTema } from "@/hooks/useTema";
 
 // ============================================================
 // Kit de UI — UERJ Para Todos
@@ -110,6 +111,35 @@ const BASE_CAMPO =
 export function CampoTexto({ rotulo, className = "", ...props }) {
   const campo = (
     <input {...props} className={cx(BASE_CAMPO, className)} />
+  );
+  if (!rotulo) return campo;
+  return (
+    <label className="flex flex-col gap-1.5">
+      <span className="text-xs font-semibold text-ink-300">{rotulo}</span>
+      {campo}
+    </label>
+  );
+}
+
+// Campo de senha com botão de mostrar/ocultar embutido.
+export function CampoSenha({ rotulo, className = "", ...props }) {
+  const [visivel, setVisivel] = useState(false);
+  const campo = (
+    <div className="relative">
+      <input
+        {...props}
+        type={visivel ? "text" : "password"}
+        className={cx(BASE_CAMPO, "pr-11", className)}
+      />
+      <button
+        type="button"
+        onClick={() => setVisivel((v) => !v)}
+        aria-label={visivel ? "Ocultar senha" : "Mostrar senha"}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-500 hover:text-ink-200 transition-colors"
+      >
+        {visivel ? <EyeOff size={17} /> : <Eye size={17} />}
+      </button>
+    </div>
   );
   if (!rotulo) return campo;
   return (
