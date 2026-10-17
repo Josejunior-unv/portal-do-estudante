@@ -17,6 +17,11 @@ export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
+  // Testes unitários (Vitest reaproveita esta config, inclusive o alias).
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.{js,jsx}'],
+  },
   build: {
     rolldownOptions: {
       output: {
