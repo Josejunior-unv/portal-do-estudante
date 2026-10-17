@@ -1,0 +1,33 @@
+# Verifica cada push e pull request: lint, testes e build.
+# Roda em Linux — pega na hora import com maiúscula/minúscula errada, que no
+# Windows passa e só quebrava no deploy da Vercel.
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: vestibular-app
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: vestibular-app/.nvmrc
+          cache: npm
+          cache-dependency-path: vestibular-app/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
