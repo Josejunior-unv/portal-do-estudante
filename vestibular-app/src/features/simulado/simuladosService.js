@@ -6,26 +6,15 @@
 // espelhar isto numa tabela `simulados` do Supabase para sincronizar entre
 // dispositivos (ver relatório) — a API deste módulo já foi desenhada para isso.
 
+import { lerJSON, gravarJSON } from "@/lib/armazenamento";
+
 const chave = (userId) => `simulados_hist_${userId || "anon"}`;
 const chaveMeta = (userId) => `simulados_meta_${userId || "anon"}`;
 
 const META_PADRAO = { simuladosPorSemana: 3 };
 
-function ler(userId) {
-  try {
-    return JSON.parse(localStorage.getItem(chave(userId))) || [];
-  } catch {
-    return [];
-  }
-}
-
-function escrever(userId, lista) {
-  try {
-    localStorage.setItem(chave(userId), JSON.stringify(lista));
-  } catch {
-    // ignora cota cheia
-  }
-}
+const ler = (userId) => lerJSON(chave(userId), []);
+const escrever = (userId, lista) => gravarJSON(chave(userId), lista);
 
 // Histórico (mais recente primeiro).
 export function carregarHistorico(userId) {
@@ -55,19 +44,11 @@ export function medalhaDe(pct) {
 
 // Meta semanal.
 export function carregarMeta(userId) {
-  try {
-    return { ...META_PADRAO, ...JSON.parse(localStorage.getItem(chaveMeta(userId))) };
-  } catch {
-    return { ...META_PADRAO };
-  }
+  return { ...META_PADRAO, ...lerJSON(chaveMeta(userId), {}) };
 }
 
 export function salvarMeta(userId, meta) {
-  try {
-    localStorage.setItem(chaveMeta(userId), JSON.stringify(meta));
-  } catch {
-    // ignora
-  }
+  gravarJSON(chaveMeta(userId), meta);
 }
 
 function inicioSemana() {

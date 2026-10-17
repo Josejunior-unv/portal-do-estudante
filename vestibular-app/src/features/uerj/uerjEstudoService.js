@@ -1,24 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { areaPorId } from "@/constants/areasConhecimento";
-
-/**
- * Coleta TODAS as linhas de uma consulta, paginando de 1000 em 1000.
- * O PostgREST do Supabase limita cada resposta a 1000 linhas — um
- * `.range(0, 4999)` devolve silenciosamente só as 1000 primeiras, o que
- * fazia filtros e contagens ignorarem metade do acervo.
- */
-async function coletarTudo(montarConsulta, tamanho = 1000) {
-  const linhas = [];
-  for (let inicio = 0; ; inicio += tamanho) {
-    const { data, error } = await montarConsulta().range(
-      inicio,
-      inicio + tamanho - 1,
-    );
-    if (error) return { data: linhas, error };
-    linhas.push(...(data || []));
-    if (!data || data.length < tamanho) return { data: linhas, error: null };
-  }
-}
+import { coletarTudo } from "@/lib/consultas";
+import { lerJSON, gravarJSON } from "@/lib/armazenamento";
 
 // ============================================================
 // Serviço de estudo do banco de questões da UERJ.
@@ -43,21 +26,11 @@ const chaveHistorico = (userId) => `uerj_historico_${userId || "anon"}`;
 const VAZIO = { respostas: {}, favoritas: [], revisar: [] };
 
 export function carregarEstudo(userId) {
-  try {
-    const dados = JSON.parse(localStorage.getItem(chave(userId)));
-    return { ...VAZIO, ...(dados || {}) };
-  } catch {
-    return { ...VAZIO };
-  }
+  return { ...VAZIO, ...lerJSON(chave(userId), {}) };
 }
 
-function salvarEstudo(userId, estudo) {
-  try {
-    localStorage.setItem(chave(userId), JSON.stringify(estudo));
-  } catch {
-    // Cota cheia: o progresso vale só na sessão.
-  }
-}
+// Cota cheia: o progresso vale só na sessão.
+const salvarEstudo = (userId, estudo) => gravarJSON(chave(userId), estudo);
 
 /** Registra a resposta de UMA questão. Devolve o estudo atualizado. */
 export function registrarResposta(userId, questao, letra, tempoSegundos) {
@@ -88,24 +61,13 @@ export function alternarMarcacao(userId, questaoId, lista) {
 
 /* Histórico de provas completas e simulados. */
 export function carregarHistoricoUerj(userId) {
-  try {
-    return JSON.parse(localStorage.getItem(chaveHistorico(userId))) || [];
-  } catch {
-    return [];
-  }
+  return lerJSON(chaveHistorico(userId), []);
 }
 
 export function salvarResultadoUerj(userId, resultado) {
   const historico = carregarHistoricoUerj(userId);
   historico.unshift({ ...resultado, data: new Date().toISOString() });
-  try {
-    localStorage.setItem(
-      chaveHistorico(userId),
-      JSON.stringify(historico.slice(0, 100)),
-    );
-  } catch {
-    // sem espaço: segue sem persistir
-  }
+  gravarJSON(chaveHistorico(userId), historico.slice(0, 100));
   return historico;
 }
 

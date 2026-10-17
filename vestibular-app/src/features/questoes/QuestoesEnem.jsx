@@ -24,6 +24,7 @@ import {
   DIFICULDADES,
   mapaDificuldade,
 } from "@/features/questoes/questoesUtils";
+import { lerJSON, gravarJSON } from "@/lib/armazenamento";
 
 // Anos de prova disponíveis na API oficial do ENEM (mais recente primeiro).
 const ANOS_DISPONIVEIS = [
@@ -37,13 +38,7 @@ const ANO_PADRAO = 2020;
 const STORAGE_PREFIXO = "enem_respostas";
 const chaveStorage = (userId) => `${STORAGE_PREFIXO}_${userId || "anon"}`;
 
-function carregarRespostasLocais(userId) {
-  try {
-    return JSON.parse(localStorage.getItem(chaveStorage(userId))) || {};
-  } catch {
-    return {};
-  }
-}
+const carregarRespostasLocais = (userId) => lerJSON(chaveStorage(userId), {});
 
 function SkeletonQuestao() {
   return (
@@ -119,14 +114,7 @@ function QuestoesEnem({ userId }) {
 
   // Salva o progresso localmente a cada nova resposta.
   useEffect(() => {
-    try {
-      localStorage.setItem(
-        chaveStorage(userId),
-        JSON.stringify(respostasUsuario),
-      );
-    } catch {
-      // Ignora falhas de escrita (ex.: cota do localStorage cheia).
-    }
+    gravarJSON(chaveStorage(userId), respostasUsuario);
   }, [respostasUsuario, userId]);
 
   const dificuldadePorId = useMemo(

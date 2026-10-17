@@ -11,7 +11,6 @@ import {
   Link2,
   Inbox,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { MATERIAS, TIPOS_MATERIAL, coresDe } from "@/constants/materias";
 import { listarMateriais } from "@/features/materiais/materiaisService";
 import {
@@ -22,6 +21,7 @@ import { usePersistedState } from "@/hooks/usePersistedState";
 import { Botao, Selo, EstadoVazio, Esqueleto, BarraProgresso, CabecalhoPagina } from "@/components/ui";
 import { cx } from "@/components/ui/cx";
 import { useAuth } from "@/features/auth/useAuth";
+import { useInsercoesRealtime } from "@/hooks/useInsercoesRealtime";
 
 const formatarData = (iso) => {
   if (!iso) return "";
@@ -73,21 +73,17 @@ export default function MinhasTarefas() {
     }
     carregar();
 
-    const canal = supabase
-      .channel("tarefas_materiais")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "materiais_estudo" },
-        (payload) => setMateriais((prev) => [payload.new, ...prev]),
-      )
-      .subscribe();
-
     return () => {
       ativo = false;
-      if (canal && typeof canal.unsubscribe === "function") canal.unsubscribe();
-      else if (canal) supabase.removeChannel?.(canal);
     };
   }, [userId]);
+
+  // Material novo publicado pelo professor aparece na hora.
+  useInsercoesRealtime({
+    canal: "tarefas_materiais",
+    tabela: "materiais_estudo",
+    aoInserir: (novo) => setMateriais((prev) => [novo, ...prev]),
+  });
 
   async function alternarConclusao(id) {
     const novo = !concluidas[id];

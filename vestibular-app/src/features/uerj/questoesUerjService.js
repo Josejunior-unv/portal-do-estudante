@@ -1,29 +1,11 @@
 import { supabase } from "@/lib/supabase";
 import { areaDaDisciplina } from "@/constants/areasConhecimento";
+import { coletarTudo } from "@/lib/consultas";
 
 // Camada única de acesso às provas/questões da UERJ importadas pelo
 // pipeline (scripts/importador_uerj). Todas as funções degradam com
 // elegância quando a migração ainda não foi executada (tabela ausente):
 // devolvem listas vazias em vez de quebrar a tela.
-
-/**
- * Coleta TODAS as linhas de uma consulta, paginando de 1000 em 1000.
- * O PostgREST do Supabase limita cada resposta a 1000 linhas — consultas
- * sem paginação devolvem silenciosamente só as 1000 primeiras e faziam
- * contagens/filtros ignorarem parte do acervo.
- */
-export async function coletarTudo(montarConsulta, tamanho = 1000) {
-  const linhas = [];
-  for (let inicio = 0; ; inicio += tamanho) {
-    const { data, error } = await montarConsulta().range(
-      inicio,
-      inicio + tamanho - 1,
-    );
-    if (error) return { data: linhas, error };
-    linhas.push(...(data || []));
-    if (!data || data.length < tamanho) return { data: linhas, error: null };
-  }
-}
 
 export async function listarProvasUerj() {
   const { data, error } = await supabase

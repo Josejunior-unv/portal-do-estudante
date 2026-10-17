@@ -206,3 +206,28 @@ export async function registrarRespostaEnem(userId, acertou, materia) {
 
     return { data, error };
 }
+
+// Resumo das tarefas: materiais publicados × concluídos pelo aluno, no total
+// e por matéria (ordenado da matéria com mais materiais para a com menos).
+export function resumirTarefas(materiais, concluidas) {
+  const porMateria = {};
+  let feitas = 0;
+  for (const m of materiais) {
+    const feita = Boolean(concluidas[m.id]);
+    if (feita) feitas++;
+    porMateria[m.materia] ??= { total: 0, feitas: 0 };
+    porMateria[m.materia].total++;
+    if (feita) porMateria[m.materia].feitas++;
+  }
+  const pct = (parte, todo) => (todo ? Math.round((parte / todo) * 100) : 0);
+  const total = materiais.length;
+  return {
+    total,
+    feitas,
+    pendentes: total - feitas,
+    pct: pct(feitas, total),
+    porMateria: Object.entries(porMateria)
+      .map(([name, v]) => ({ name, ...v, pct: pct(v.feitas, v.total) }))
+      .sort((a, b) => b.total - a.total),
+  };
+}

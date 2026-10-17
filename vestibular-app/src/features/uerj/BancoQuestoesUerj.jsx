@@ -39,6 +39,7 @@ import {
   Alerta,
 } from "@/components/ui";
 import { cx } from "@/components/ui/cx";
+import { lerJSON, gravarJSON } from "@/lib/armazenamento";
 
 const POR_PAGINA = 10;
 
@@ -54,13 +55,7 @@ const FILTROS_PADRAO = {
   comImagem: false,
 };
 
-function filtrosGuardados() {
-  try {
-    return JSON.parse(localStorage.getItem(CHAVE_FILTROS)) || {};
-  } catch {
-    return {};
-  }
-}
+const filtrosGuardados = () => lerJSON(CHAVE_FILTROS, {});
 
 const PONTO_DIFICULDADE = {
   facil: "text-emerald-400",
@@ -305,11 +300,7 @@ export default function BancoQuestoesUerj({
       : { ...FILTROS_PADRAO, ...filtrosGuardados() };
   });
   useEffect(() => {
-    try {
-      localStorage.setItem(CHAVE_FILTROS, JSON.stringify(filtros));
-    } catch {
-      // cota cheia: filtros valem só na sessão
-    }
+    gravarJSON(CHAVE_FILTROS, filtros); // cota cheia: valem só na sessão
   }, [filtros]);
   const [ids, setIds] = useState([]);
   const [pagina, setPagina] = useState(0);

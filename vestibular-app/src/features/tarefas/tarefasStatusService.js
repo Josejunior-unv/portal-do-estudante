@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { lerJSON, gravarJSON } from "@/lib/armazenamento";
 
 // Conclusão de tarefas por aluno. Fonte de verdade: tabela `tarefas_status`
 // (sincroniza entre dispositivos, protegida por RLS). Se a tabela ainda não
@@ -6,20 +7,8 @@ import { supabase } from "@/lib/supabase";
 
 const chave = (userId) => `tarefas_concluidas_${userId || "anon"}`;
 
-function localGet(userId) {
-  try {
-    return JSON.parse(localStorage.getItem(chave(userId))) || {};
-  } catch {
-    return {};
-  }
-}
-function localSet(userId, mapa) {
-  try {
-    localStorage.setItem(chave(userId), JSON.stringify(mapa));
-  } catch {
-    // ignora cota cheia
-  }
-}
+const localGet = (userId) => lerJSON(chave(userId), {});
+const localSet = (userId, mapa) => gravarJSON(chave(userId), mapa);
 
 // Após o primeiro erro do banco (tabela ausente), usamos só o local.
 let dbIndisponivel = false;

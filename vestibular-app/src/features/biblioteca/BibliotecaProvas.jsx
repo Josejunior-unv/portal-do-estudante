@@ -13,7 +13,6 @@ import {
   Share2,
   Check,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { listarMateriais } from "@/features/materiais/materiaisService";
 import { listarProvasUerj } from "@/features/uerj/questoesUerjService";
 import { MATERIAS, coresDe } from "@/constants/materias";
@@ -28,6 +27,7 @@ import {
   CabecalhoPagina,
 } from "@/components/ui";
 import { cx } from "@/components/ui/cx";
+import { useInsercoesRealtime } from "@/hooks/useInsercoesRealtime";
 
 // ------------------------------------------------------------
 // BIBLIOTECA UERJ — ambiente exclusivo das provas da UERJ,
@@ -224,21 +224,17 @@ export default function BibliotecaProvas() {
       },
     );
 
-    const canal = supabase
-      .channel("biblioteca_materiais")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "materiais_estudo" },
-        (payload) => setMateriais((prev) => [payload.new, ...prev]),
-      )
-      .subscribe();
-
     return () => {
       ativo = false;
-      if (canal && typeof canal.unsubscribe === "function") canal.unsubscribe();
-      else if (canal) supabase.removeChannel?.(canal);
     };
   }, []);
+
+  // Material novo publicado pelo professor aparece na hora.
+  useInsercoesRealtime({
+    canal: "biblioteca_materiais",
+    tabela: "materiais_estudo",
+    aoInserir: (novo) => setMateriais((prev) => [novo, ...prev]),
+  });
 
   // Acervo = provas publicadas pelos professores (materiais reconhecidos
   // como prova) + provas importadas do site da UERJ pelo pipeline.

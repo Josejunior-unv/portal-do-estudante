@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { processarEstatisticas, salvarSessaoEstudos } from "@/features/estatisticas/estatisticasService";
-import { supabase } from "@/lib/supabase";
+import { resumirTarefas, processarEstatisticas, salvarSessaoEstudos } from "@/features/estatisticas/estatisticasService";
 import { listarMateriais } from "@/features/materiais/materiaisService";
 import { carregarConcluidas } from "@/features/tarefas/tarefasStatusService";
 import {
@@ -14,6 +13,7 @@ import {
 } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/features/auth/useAuth";
+import { useInsercoesRealtime } from "@/hooks/useInsercoesRealtime";
 
 // Tooltip visual único, reaproveitado por todos os gráficos.
 function DicaGrafico({ active, payload, label, sufixo = "" }) {
@@ -80,33 +80,7 @@ export default function Estatisticas() {
         listarMateriais(),
         carregarConcluidas(userId),
       ]);
-      if (!ativo) return;
-      const porMateria = {};
-      let total = 0;
-      let feitas = 0;
-      data.forEach((m) => {
-        total++;
-        const f = !!mapa[m.id];
-        if (f) feitas++;
-        if (!porMateria[m.materia]) porMateria[m.materia] = { total: 0, feitas: 0 };
-        porMateria[m.materia].total++;
-        if (f) porMateria[m.materia].feitas++;
-      });
-      setTarefas({
-        total,
-        feitas,
-        pendentes: total - feitas,
-        pct: total ? Math.round((feitas / total) * 100) : 0,
-        porMateria: Object.keys(porMateria)
-          .map((n) => ({
-            name: n,
-            ...porMateria[n],
-            pct: porMateria[n].total
-              ? Math.round((porMateria[n].feitas / porMateria[n].total) * 100)
-              : 0,
-          }))
-          .sort((a, b) => b.total - a.total),
-      });
+      if (ativo) setTarefas(resumirTarefas(data, mapa));
     }
     if (userId) carregarTarefas();
     return () => {
@@ -116,32 +90,16 @@ export default function Estatisticas() {
 
   useEffect(() => {
     carregarDados();
-    if (!userId) return;
+  }, [carregarDados]);
 
-    // Atualização em tempo real: recarrega as métricas sempre que uma nova
-    // questão respondida for inserida para este usuário.
-    const canal = supabase
-      .channel(`estatisticas_${userId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "questoes_respondidas",
-          filter: `usuario_id=eq.${userId}`,
-        },
-        () => carregarDados(),
-      )
-      .subscribe();
-
-    return () => {
-      if (canal && typeof canal.unsubscribe === "function") {
-        canal.unsubscribe();
-      } else if (canal) {
-        supabase.removeChannel?.(canal);
-      }
-    };
-  }, [carregarDados, userId]);
+  // Tempo real: recarrega as métricas a cada questão respondida pelo aluno.
+  useInsercoesRealtime({
+    canal: `estatisticas_${userId}`,
+    tabela: "questoes_respondidas",
+    filtro: `usuario_id=eq.${userId}`,
+    aoInserir: carregarDados,
+    ativo: Boolean(userId),
+  });
 
   const handleSalvarRegistro = async (e) => {
     e.preventDefault();
