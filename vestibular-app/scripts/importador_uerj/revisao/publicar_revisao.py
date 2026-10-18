@@ -51,8 +51,11 @@ def main():
     # 1) estrutura (PARTE 14)
     r = s.get(f"{base}/rest/v1/textos_apoio_uerj?select=id&limit=1")
     r2 = s.get(f"{base}/rest/v1/questoes_uerj?select=recorte_url,anulada,apoio_ids,texto_confiavel&limit=1")
+    if r.status_code in (401, 403) or r2.status_code in (401, 403):
+        raise SystemExit(f"Chave recusada pelo Supabase ({r.status_code}): {r.text[:200]}")
     if r.status_code >= 300 or r2.status_code >= 300:
-        raise SystemExit("Rode antes a PARTE 14 do supabase_migration.sql no SQL Editor do Supabase.")
+        raise SystemExit("Rode antes a PARTE 14 do supabase_migration.sql no SQL Editor do Supabase. "
+                         f"({r.status_code} {r.text[:150]} | {r2.status_code} {r2.text[:150]})")
 
     # 2) imagens (paralelo, retomável)
     # recortes ficam em dados/revisao/lote/<prova_id>/: a pasta dá a prova
