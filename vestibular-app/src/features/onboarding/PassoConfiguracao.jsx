@@ -17,7 +17,7 @@ function Slider({ label, valor, min, max, onChange, sufixo }) {
     <div className="bg-ink-900/50 border border-ink-800 rounded-2xl p-4">
       <div className="flex items-center justify-between mb-3">
         <label className="text-sm font-semibold text-ink-200">{label}</label>
-        <span className="text-lg font-black text-gold-400">
+        <span className="text-lg font-black text-gold-300">
           {valor}
           <span className="text-xs text-ink-500 font-bold"> {sufixo}</span>
         </span>
@@ -124,7 +124,7 @@ export default function PassoConfiguracao({ onNext, onBack, inicial = {} }) {
           type="button"
           onClick={finalizar}
           whileTap={{ scale: 0.99 }}
-          className="flex-1 bg-gold-400 hover:bg-gold-300 text-ink-950 font-bold py-3 rounded-xl transition-all shadow-[var(--shadow-gold)]"
+          className="flex-1 bg-gold-400 hover:bg-gold-500 text-sobre-destaque font-bold py-3 rounded-xl transition-all shadow-[var(--shadow-gold)]"
         >
           Gerar meu cronograma
         </motion.button>

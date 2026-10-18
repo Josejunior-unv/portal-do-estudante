@@ -1,11 +1,15 @@
-// Aplica o tema salvo ANTES do primeiro paint (evita flash de tema errado).
-// Fica num arquivo próprio (e não inline no index.html) para permitir uma
-// Content-Security-Policy sem 'unsafe-inline' em script-src.
+// Aplica o tema ANTES do primeiro paint (evita flash de tema errado):
+// o escolhido pelo aluno; se ele nunca escolheu, o do sistema; papel
+// (claro) por padrão. Arquivo próprio (e não inline no index.html) para a
+// Content-Security-Policy não precisar de 'unsafe-inline' em script-src.
 (function () {
+  var tema = "light";
   try {
-    var t = localStorage.getItem("tema");
-    document.documentElement.dataset.theme = t === "light" ? "light" : "dark";
+    var salvo = localStorage.getItem("tema");
+    if (salvo === "light" || salvo === "dark") tema = salvo;
+    else if (window.matchMedia("(prefers-color-scheme: dark)").matches) tema = "dark";
   } catch {
-    document.documentElement.dataset.theme = "dark";
+    // sem localStorage: fica no padrão
   }
+  document.documentElement.dataset.theme = tema;
 })();

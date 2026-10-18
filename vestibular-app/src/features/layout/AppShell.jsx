@@ -9,7 +9,6 @@ import {
   Library,
   BarChart3,
   LogOut,
-  Flame,
   Menu,
   PanelLeftClose,
   PanelLeftOpen,
@@ -33,7 +32,7 @@ const BibliotecaProvas = lazy(() => import("@/features/biblioteca/BibliotecaProv
 
 const Carregando = ({ texto = "Carregando..." }) => (
   <div className="mt-16 flex flex-col items-center gap-3 text-ink-400">
-    <Loader2 size={22} className="animate-spin text-gold-400" />
+    <Loader2 size={22} className="animate-spin text-gold-300" />
     <span className="text-sm">{texto}</span>
   </div>
 );
@@ -58,14 +57,14 @@ const BotaoMenu = ({ ativo, onClick, icone: Icone, label, recolhida }) => (
                   recolhida ? "justify-center px-0 py-3" : "px-3.5 py-2.5"
                 } ${
                   ativo
-                    ? "text-gold-300"
+                    ? "text-white font-bold"
                     : "text-ink-400 hover:text-ink-100 hover:bg-white/[0.04]"
                 }`}
   >
     {ativo && (
       <motion.span
         layoutId="menu-ativo"
-        className="absolute inset-0 rounded-xl bg-gold-400/10 border border-gold-400/20"
+        className="absolute inset-0 rounded-lg bg-white/[0.06] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-gold-400"
         transition={{ type: "spring", stiffness: 420, damping: 34 }}
       />
     )}
@@ -89,19 +88,18 @@ const ConteudoSidebar = ({
         recolhida ? "justify-center" : "justify-between px-1"
       }`}
     >
-      <div className="flex items-center gap-2.5 cursor-default min-w-0">
-        <span className="w-9 h-9 shrink-0 rounded-xl bg-gold-400 text-ink-950 flex items-center justify-center shadow-[var(--shadow-gold)]">
-          <Flame size={18} strokeWidth={2.5} />
-        </span>
-        {!recolhida && (
-          <div className="min-w-0 leading-tight">
-            <p className="font-display font-black text-white text-sm tracking-tight truncate">
-              UERJ Para Todos
-            </p>
-            <p className="text-[10px] uppercase tracking-widest text-ink-500 font-semibold">
-              Pré-Vestibular
-            </p>
-          </div>
+      <div className="flex items-center cursor-default min-w-0" aria-label="UERJ Para Todos">
+        {recolhida ? (
+          <span className="font-display font-black text-lg text-white leading-none">U</span>
+        ) : (
+          <span className="leading-none">
+            <span className="block font-display font-black text-2xl text-white tracking-tight">
+              UERJ
+            </span>
+            <span className="mt-1 inline-block bg-gold-400 text-sobre-destaque font-display font-black text-[11px] tracking-[0.14em] px-1.5 py-0.5 rounded-[3px] -rotate-2">
+              PARA TODOS
+            </span>
+          </span>
         )}
       </div>
       {!recolhida && onAlternarRecolhida && (

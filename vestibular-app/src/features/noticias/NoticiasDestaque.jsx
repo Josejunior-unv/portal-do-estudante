@@ -41,7 +41,7 @@ export default function NoticiasDestaque() {
   return (
     <section className="mb-10">
       <div className="flex items-center gap-2.5 mb-4">
-        <Newspaper size={18} className="text-gold-400" />
+        <Newspaper size={18} className="text-gold-300" />
         <h2 className="text-xl font-black text-white tracking-tight font-display">
           Novidades
         </h2>
@@ -64,7 +64,7 @@ export default function NoticiasDestaque() {
             <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-ink-950/10" />
           </>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-gold-400/15 via-ink-900 to-ink-950" />
+          <div className="absolute inset-0 bg-ink-900" />
         )}
 
         <div className="relative z-10 p-6 sm:p-8 mt-auto w-full">
@@ -122,7 +122,7 @@ export default function NoticiasDestaque() {
                   />
                 </div>
               ) : (
-                <div className="h-28 bg-gradient-to-br from-ink-800 to-ink-900 flex items-center justify-center text-ink-500">
+                <div className="h-28 bg-ink-850 flex items-center justify-center text-ink-500">
                   <Newspaper size={26} strokeWidth={1.5} />
                 </div>
               )}

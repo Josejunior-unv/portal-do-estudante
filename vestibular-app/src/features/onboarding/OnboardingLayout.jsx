@@ -18,23 +18,12 @@ export default function OnboardingLayout({
   largura = "max-w-2xl",
 }) {
   return (
-    <div className="relative min-h-screen flex items-center justify-center py-10 px-4 bg-ink-950 overflow-hidden">
-      {/* brilho dourado ambiente, mesmo clima da tela de login */}
-      <div
-        aria-hidden
-        className="absolute -top-48 -left-48 w-[620px] h-[620px] rounded-full opacity-[0.06] blur-3xl pointer-events-none"
-        style={{ background: "radial-gradient(circle, var(--color-gold-400) 0%, transparent 70%)" }}
-      />
-      <div
-        aria-hidden
-        className="absolute -bottom-56 -right-40 w-[520px] h-[520px] rounded-full opacity-[0.05] blur-3xl pointer-events-none"
-        style={{ background: "radial-gradient(circle, var(--color-gold-400) 0%, transparent 70%)" }}
-      />
+    <div className="min-h-screen flex items-center justify-center py-10 px-4 bg-ink-950">
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className={`w-full ${largura} bg-ink-950/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8`}
+        className={`w-full ${largura} bg-ink-900 border border-white/[0.1] rounded-2xl p-6 sm:p-8`}
       >
         {/* Stepper */}
         <div className="flex items-center justify-center mb-8">
@@ -53,7 +42,7 @@ export default function OnboardingLayout({
                       concluido
                         ? "bg-emerald-500 border-emerald-500 text-white"
                         : ativo
-                          ? "bg-gold-400 border-gold-400 text-ink-950 shadow-[var(--shadow-gold)]"
+                          ? "bg-gold-400 border-gold-400 text-sobre-destaque shadow-[var(--shadow-gold)]"
                           : "bg-ink-900 border-ink-700 text-ink-500"
                     }`}
                   >

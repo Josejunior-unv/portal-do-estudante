@@ -18,13 +18,13 @@ import { useTema } from "@/hooks/useTema";
 
 const VARIANTES_BOTAO = {
   primario:
-    "bg-gold-400 text-ink-950 font-bold hover:bg-gold-300 shadow-[var(--shadow-gold)] disabled:bg-ink-700 disabled:text-ink-400 disabled:shadow-none",
+    "bg-gold-400 text-sobre-destaque font-bold border border-black/10 hover:bg-gold-500 disabled:bg-ink-800 disabled:text-ink-500 disabled:border-transparent",
   secundario:
     "bg-ink-800 text-ink-100 font-semibold border border-ink-700 hover:border-ink-500 hover:text-white disabled:opacity-40",
   fantasma:
     "text-ink-300 font-semibold hover:text-white hover:bg-white/5 disabled:opacity-40",
   contorno:
-    "border border-gold-400/40 text-gold-300 font-semibold hover:bg-gold-400/10 hover:border-gold-400/70 disabled:opacity-40",
+    "border border-ink-500 text-ink-100 font-semibold hover:border-ink-300 hover:bg-white/[0.04] disabled:opacity-40",
   perigo:
     "bg-rose-500/10 text-rose-300 font-semibold border border-rose-500/30 hover:bg-rose-500/20 hover:text-rose-200 disabled:opacity-40",
 };
@@ -85,7 +85,7 @@ const VARIANTES_SELO = {
   sucesso: "bg-emerald-500/10 text-emerald-300 border-emerald-500/25",
   erro: "bg-rose-500/10 text-rose-300 border-rose-500/25",
   aviso: "bg-amber-500/10 text-amber-300 border-amber-500/25",
-  solido: "bg-gold-400 text-ink-950 border-gold-400 font-bold",
+  solido: "bg-gold-400 text-sobre-destaque border-black/10 font-bold",
 };
 
 export function Selo({ variante = "neutro", className = "", ...props }) {
@@ -388,5 +388,88 @@ export function CabecalhoPagina({ titulo, descricao, acoes, className = "" }) {
       </div>
       {acoes && <div className="flex items-center gap-2">{acoes}</div>}
     </div>
+  );
+}
+
+/* ---------------------------------------------------------- */
+/* Grifo — marca-texto amarelo atrás de uma palavra            */
+/* ---------------------------------------------------------- */
+
+export function Grifo({ className = "", ...props }) {
+  return <mark {...props} className={cx("grifo", className)} />;
+}
+
+/* ---------------------------------------------------------- */
+/* Bolha — a bolinha do cartão-resposta da prova               */
+/* ---------------------------------------------------------- */
+
+// estado: 'vazia' | 'marcada' (escolha sem correção) | 'certa' | 'errada'
+//         | 'gabarito' (a correta, quando o aluno marcou outra)
+const ESTADOS_BOLHA = {
+  vazia: "border-ink-400 text-ink-300 bg-ink-900",
+  marcada: "border-sobre-destaque bg-gold-400 text-sobre-destaque",
+  certa: "border-emerald-400 bg-emerald-400 text-ink-950",
+  errada: "border-rose-400 bg-rose-400 text-ink-950",
+  gabarito: "border-emerald-400 text-emerald-300 bg-ink-900 border-[2.5px]",
+};
+
+const TAMANHOS_BOLHA = {
+  sm: "w-6 h-6 text-[11px]",
+  md: "w-9 h-9 text-sm",
+  lg: "w-12 h-12 text-base",
+};
+
+export function Bolha({ letra, estado = "vazia", tamanho = "md", className = "" }) {
+  return (
+    <span
+      aria-hidden
+      className={cx(
+        "inline-flex shrink-0 items-center justify-center rounded-full border-2 font-mono font-bold leading-none transition-colors duration-150",
+        ESTADOS_BOLHA[estado],
+        TAMANHOS_BOLHA[tamanho],
+        className,
+      )}
+    >
+      {letra}
+    </span>
+  );
+}
+
+/* ---------------------------------------------------------- */
+/* Cartão-resposta — fileira de bolhas com acertos e erros     */
+/* ---------------------------------------------------------- */
+
+// itens: [{ acertou: boolean, rotulo?: string }]
+export function CartaoResposta({ itens = [], className = "" }) {
+  return (
+    <ol className={cx("flex flex-wrap gap-2", className)} aria-label="Suas últimas respostas">
+      {itens.map((it, i) => (
+        <li key={i} title={it.rotulo} className="flex flex-col items-center gap-1">
+          <Bolha
+            tamanho="md"
+            estado={it.acertou ? "certa" : "errada"}
+            letra={it.acertou ? "✓" : "✕"}
+          />
+          <span className="sr-only">{it.acertou ? "acertou" : "errou"} {it.rotulo}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/* ---------------------------------------------------------- */
+/* Selo de matéria — sigla, no lugar de emoji                  */
+/* ---------------------------------------------------------- */
+
+export function SeloMateria({ sigla, className = "" }) {
+  return (
+    <span
+      className={cx(
+        "inline-flex items-center justify-center min-w-[2.75rem] h-7 px-1.5 rounded-md border border-ink-600 bg-ink-850 font-mono text-[11px] font-bold tracking-wider text-ink-200",
+        className,
+      )}
+    >
+      {sigla}
+    </span>
   );
 }

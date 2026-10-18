@@ -10,41 +10,41 @@ export { idQuestao };
 // Filtros por área do conhecimento. A API do ENEM classifica cada questão em
 // uma das 4 grandes áreas (`discipline`) + língua estrangeira (`language`).
 export const FILTROS = [
-  { id: "todas", label: "Todas", icone: "🎯", testar: () => true },
+  { id: "todas", label: "Todas", icone: "", testar: () => true },
   {
     id: "matematica",
     label: "Matemática",
-    icone: "🔢",
+    icone: "",
     testar: (q) => q.discipline === "matematica",
   },
   {
     id: "linguagens",
     label: "Linguagens",
-    icone: "📖",
+    icone: "",
     testar: (q) => q.discipline === "linguagens",
   },
   {
     id: "humanas",
     label: "Ciências Humanas",
-    icone: "🌍",
+    icone: "",
     testar: (q) => q.discipline === "ciencias-humanas",
   },
   {
     id: "natureza",
     label: "Ciências da Natureza",
-    icone: "🔬",
+    icone: "",
     testar: (q) => q.discipline === "ciencias-natureza",
   },
   {
     id: "ingles",
     label: "Inglês",
-    icone: "🇬🇧",
+    icone: "",
     testar: (q) => q.language === "ingles",
   },
   {
     id: "espanhol",
     label: "Espanhol",
-    icone: "🇪🇸",
+    icone: "",
     testar: (q) => q.language === "espanhol",
   },
 ];

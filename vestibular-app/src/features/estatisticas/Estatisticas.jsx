@@ -14,6 +14,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/features/auth/useAuth";
 import { useInsercoesRealtime } from "@/hooks/useInsercoesRealtime";
+import { CabecalhoPagina, CartaoResposta, SeloMateria } from "@/components/ui";
+import { siglaDaMateria } from "@/constants/materias";
 
 // Tooltip visual único, reaproveitado por todos os gráficos.
 function DicaGrafico({ active, payload, label, sufixo = "" }) {
@@ -30,24 +32,6 @@ function DicaGrafico({ active, payload, label, sufixo = "" }) {
           </span>
         </p>
       ))}
-    </div>
-  );
-}
-
-// Card de indicador (KPI) — número grande + rótulo, estilo Linear/Stripe.
-function CardKPI({ valor, rotulo, sufixo = "", cor = "text-white", sub }) {
-  return (
-    <div className="bg-ink-950/50 p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
-      <p className={`text-3xl font-black leading-none ${cor}`}>
-        {valor}
-        <span className="text-lg text-ink-500">{sufixo}</span>
-      </p>
-      <div className="mt-2">
-        <p className="text-[11px] uppercase tracking-wider text-ink-500 font-bold">
-          {rotulo}
-        </p>
-        {sub && <p className="text-[11px] text-ink-600 mt-0.5">{sub}</p>}
-      </div>
     </div>
   );
 }
@@ -149,65 +133,43 @@ export default function Estatisticas() {
   const g = dados.geral;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-4xl mx-auto p-6 sm:p-8 rounded-[2rem] bg-ink-900/50 backdrop-blur-xl border border-white/10 shadow-2xl"
-    >
-      <div className="flex justify-between items-end mb-6 flex-wrap gap-4">
-        <div>
-          <h2 className="text-3xl font-black text-white tracking-tight">
-            Meu Desempenho
-          </h2>
-          <p className="text-ink-400">
-            Métricas atualizadas automaticamente conforme você estuda.
-          </p>
-        </div>
-        {g.melhorMateria && (
-          <div className="text-right">
-            <p className="text-xs text-ink-500 uppercase tracking-wider font-bold">
-              Melhor matéria
-            </p>
-            <p className="text-emerald-400 font-bold">
-              {g.melhorMateria.name} · {g.melhorMateria.pct}%
-            </p>
-          </div>
-        )}
-      </div>
+    <div className="w-full max-w-4xl">
+      <CabecalhoPagina
+        titulo="Estatísticas"
+        descricao="Tudo o que você responde em Questões e Simulados entra aqui automaticamente."
+      />
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <CardKPI
-          valor={g.taxaAcerto}
-          sufixo="%"
-          rotulo="Aproveitamento geral"
-          cor="text-gold-400"
-        />
-        <CardKPI
-          valor={g.totalQuestoes}
-          rotulo="Questões respondidas"
-          cor="text-white"
-          sub={`${g.acertos} acertos · ${g.erros} erros`}
-        />
-        <CardKPI
-          valor={g.mediaDia}
-          rotulo="Média por dia"
-          cor="text-gold-400"
-          sub={`${g.diasAtivos} dias ativos`}
-        />
-        <CardKPI
-          valor={tarefas ? tarefas.feitas : 0}
-          sufixo={tarefas ? `/${tarefas.total}` : ""}
-          rotulo="Tarefas concluídas"
-          cor="text-amber-400"
-          sub={tarefas ? `${tarefas.pct}% concluído` : "—"}
-        />
-      </div>
+      {/* Resumo em frase + cartão-resposta (no lugar dos cartões de número) */}
+      <section className="mb-10">
+        {g.totalQuestoes > 0 ? (
+          <>
+            <CartaoResposta itens={(dados.ultimas || []).slice().reverse().map((u) => ({ acertou: u.acertou, rotulo: u.materia }))} />
+            <p className="mt-4 text-lg text-ink-200 leading-8 max-w-2xl">
+              Você acertou <strong className="text-white">{g.acertos}</strong> de{" "}
+              <strong className="text-white">{g.totalQuestoes}</strong> questões (
+              <strong className="text-white">{g.taxaAcerto}%</strong>) em {g.diasAtivos}{" "}
+              {g.diasAtivos === 1 ? "dia" : "dias"} de estudo, uma média de {g.mediaDia}{" "}
+              {g.mediaDia === 1 ? "questão" : "questões"} por dia.
+              {g.melhorMateria && (
+                <> Seu melhor resultado é em <strong className="text-white">{g.melhorMateria.name}</strong> ({g.melhorMateria.pct}%).</>
+              )}
+              {tarefas && tarefas.total > 0 && (
+                <> Das tarefas publicadas, você concluiu {tarefas.feitas} de {tarefas.total}.</>
+              )}
+            </p>
+          </>
+        ) : (
+          <p className="text-ink-300 max-w-xl leading-7">
+            Responda questões ou faça um simulado: seus acertos e erros aparecem aqui, por
+            matéria e por semana.
+          </p>
+        )}
+      </section>
 
       {/* Evolução semanal + mensal (colunas limpas, série única) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-ink-950/50 p-6 rounded-3xl border border-white/5">
-          <h3 className="text-ink-300 mb-1 font-semibold">Evolução semanal</h3>
+        <div className="p-5 rounded-2xl border border-white/[0.08] bg-ink-900">
+          <h3 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-ink-400 mb-1">Evolução semanal</h3>
           <p className="text-xs text-ink-500 mb-4">Aproveitamento (%) por semana</p>
           <div className="h-52">
             {dados.semanal.length === 0 ? (
@@ -228,8 +190,8 @@ export default function Estatisticas() {
           </div>
         </div>
 
-        <div className="bg-ink-950/50 p-6 rounded-3xl border border-white/5">
-          <h3 className="text-ink-300 mb-1 font-semibold">Evolução mensal</h3>
+        <div className="p-5 rounded-2xl border border-white/[0.08] bg-ink-900">
+          <h3 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-ink-400 mb-1">Evolução mensal</h3>
           <p className="text-xs text-ink-500 mb-4">Questões respondidas por mês</p>
           <div className="h-52">
             {dados.mensal.length === 0 ? (
@@ -253,8 +215,8 @@ export default function Estatisticas() {
 
       {/* Desempenho por matéria (barras horizontais) + Últimas atividades */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-ink-950/50 p-6 rounded-3xl border border-white/5">
-          <h3 className="text-ink-300 mb-4 font-semibold">Desempenho por matéria</h3>
+        <div className="p-5 rounded-2xl border border-white/[0.08] bg-ink-900">
+          <h3 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-ink-400 mb-4">Desempenho por matéria</h3>
           {(dados.porMateria || []).length === 0 ? (
             <p className="text-ink-600 text-sm">Sem dados ainda.</p>
           ) : (
@@ -262,7 +224,10 @@ export default function Estatisticas() {
               {dados.porMateria.map((m) => (
                 <div key={m.name}>
                   <div className="flex justify-between items-center mb-1 text-sm">
-                    <span className="text-ink-300 font-medium truncate">{m.name}</span>
+                    <span className="flex items-center gap-2 min-w-0">
+                      <SeloMateria sigla={siglaDaMateria(m.name)} />
+                      <span className="text-ink-100 font-semibold truncate">{m.name}</span>
+                    </span>
                     <span className="text-ink-500 text-xs">
                       {m.acertos}/{m.total} · {m.pct}%
                     </span>
@@ -271,10 +236,10 @@ export default function Estatisticas() {
                     <motion.div
                       className={`h-full rounded-full ${
                         m.pct >= 70
-                          ? "bg-emerald-500"
+                          ? "bg-emerald-400"
                           : m.pct >= 40
-                            ? "bg-amber-500"
-                            : "bg-rose-500"
+                            ? "bg-gold-400"
+                            : "bg-rose-400"
                       }`}
                       initial={{ width: 0 }}
                       animate={{ width: `${m.pct}%` }}
@@ -287,8 +252,8 @@ export default function Estatisticas() {
           )}
         </div>
 
-        <div className="bg-ink-950/50 p-6 rounded-3xl border border-white/5">
-          <h3 className="text-ink-300 mb-4 font-semibold">Últimas atividades</h3>
+        <div className="p-5 rounded-2xl border border-white/[0.08] bg-ink-900">
+          <h3 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-ink-400 mb-4">Últimas atividades</h3>
           {(dados.ultimas || []).length === 0 ? (
             <p className="text-ink-600 text-sm">Nenhuma atividade registrada.</p>
           ) : (
@@ -314,10 +279,10 @@ export default function Estatisticas() {
 
       {/* Progresso das Tarefas */}
       {tarefas && tarefas.total > 0 && (
-        <div className="bg-ink-950/50 p-6 rounded-3xl border border-white/5 mb-6">
+        <div className="p-5 rounded-2xl border border-white/[0.08] bg-ink-900 mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
-            <h3 className="text-ink-300 font-semibold">Progresso das tarefas</h3>
-            <span className="text-gold-400 font-black text-lg">{tarefas.pct}%</span>
+            <h3 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-ink-400">Progresso das tarefas</h3>
+            <span className="text-gold-300 font-black text-lg">{tarefas.pct}%</span>
           </div>
           <div className="w-full h-2 bg-ink-800 rounded-full overflow-hidden mb-5">
             <motion.div
@@ -351,9 +316,9 @@ export default function Estatisticas() {
       )}
 
       {/* Formulário de Registro */}
-      <div className="bg-ink-950/50 p-6 rounded-3xl border border-white/5 relative overflow-hidden">
+      <div className="p-5 rounded-2xl border border-white/[0.08] bg-ink-900 relative overflow-hidden">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-ink-300 font-semibold">Registrar sessão de estudos</h3>
+          <h3 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-ink-400">Registrar sessão de estudos</h3>
           {totalCalculado > 0 && (
             <span className="text-xs font-bold bg-ink-800 text-ink-300 px-3 py-1 rounded-full">
               Total: {totalCalculado} questões
@@ -421,13 +386,13 @@ export default function Estatisticas() {
             <button
               type="submit"
               disabled={isSaving}
-              className={`bg-gold-400 hover:bg-gold-300 text-ink-950 font-bold py-3 px-8 rounded-xl transition-all shadow-[var(--shadow-gold)] ${isSaving ? "opacity-50 cursor-wait" : ""}`}
+              className={`bg-gold-400 hover:bg-gold-500 text-sobre-destaque font-bold py-3 px-8 rounded-xl transition-all shadow-[var(--shadow-gold)] ${isSaving ? "opacity-50 cursor-wait" : ""}`}
             >
               {isSaving ? "Registrando..." : "Salvar Sessão"}
             </button>
           </div>
         </form>
       </div>
-    </motion.div>
+    </div>
   );
 }

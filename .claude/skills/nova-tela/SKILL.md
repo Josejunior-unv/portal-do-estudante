@@ -34,9 +34,17 @@ Um arquivo usado por uma única feature fica dentro dela. Só suba para
 5. **Mais de 1000 linhas do banco:** `coletarTudo` de `@/lib/consultas`
    (o PostgREST corta em 1000 silenciosamente).
 6. **Tempo real:** `useInsercoesRealtime({ canal, tabela, filtro, aoInserir })`.
-7. **Visual:** use o kit e a semântica `ink`/`gold`/`white`. Nunca escreva
-   variantes `dark:`/`light:` — o tema claro inverte as variáveis sozinho.
-   CTA primário = `<Botao>` (preto sobre ouro). Ícones: `lucide-react`.
+7. **Visual (identidade "prova + cartão-resposta", out/2026):** use o kit e a
+   semântica `ink`/`gold`/`white`; nunca variantes `dark:`/`light:` (os temas
+   PAPEL e NOITE trocam as variáveis sozinhos).
+   - `gold-400` = amarelo de PREENCHIMENTO (botão, grifo, bolha marcada), com
+     texto `text-sobre-destaque`. Como cor de TEXTO use `text-gold-300` (âmbar
+     escuro no papel). Hover de botão amarelo: `hover:bg-gold-500`.
+   - Peças da marca: `Grifo` (marca-texto), `Bolha`/`CartaoResposta` (respostas,
+     progresso, escolhas), `SeloMateria` (sigla; **nada de emoji**).
+   - Sem brilhos, glass/blur, gradientes decorativos, selos "Novo" e cartões de
+     "número grande": prefira frase + lista/tabela. Copy em frases simples,
+     sem slogan. Ícones: `lucide-react` (traço).
 8. **Nomes:** componentes em PascalCase (`MinhasTarefas.jsx`), serviços em
    camelCase terminando em `Service.js`. O deploy é Linux: a caixa do nome
    do arquivo tem que bater com o import.

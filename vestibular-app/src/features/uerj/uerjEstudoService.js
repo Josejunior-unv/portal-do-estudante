@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { areaPorId } from "@/constants/areasConhecimento";
 import { coletarTudo } from "@/lib/consultas";
+import { anexarApoios } from "@/features/uerj/questoesUerjService";
 import { lerJSON, gravarJSON } from "@/lib/armazenamento";
 
 // ============================================================
@@ -196,7 +197,8 @@ export async function buscarQuestoesPorIds(ids) {
     .in("id", ids);
   // Preserva a ordem da lista de IDs.
   const porId = new Map((data || []).map((q) => [q.id, q]));
-  return { data: ids.map((id) => porId.get(id)).filter(Boolean), error };
+  const ordenadas = ids.map((id) => porId.get(id)).filter(Boolean);
+  return { data: await anexarApoios(ordenadas), error };
 }
 
 /** Valores distintos para os selects de filtro. */
@@ -293,7 +295,7 @@ export async function questoesDaProva(provaId) {
     )
     .eq("prova_id", provaId)
     .order("numero", { ascending: true });
-  return { data: data || [], error };
+  return { data: await anexarApoios(data || []), error };
 }
 
 /** Monta um simulado personalizado (só questões com gabarito). */

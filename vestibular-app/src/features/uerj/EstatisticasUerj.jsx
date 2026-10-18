@@ -72,7 +72,7 @@ function evolucaoSemanal(respostas, semanas = 8) {
 function TileKpi({ icone: Icone, valor, rotulo, detalhe }) {
   return (
     <Cartao className="p-4">
-      <Icone size={16} className="text-gold-400 mb-2" />
+      <Icone size={16} className="text-gold-300 mb-2" />
       <p className="font-display text-2xl font-black text-white tabular-nums leading-none">
         {valor}
       </p>
@@ -263,7 +263,7 @@ export default function EstatisticasUerj({ userId, onVoltar }) {
       {/* HISTÓRICO */}
       <Cartao className="p-5">
         <h3 className="flex items-center gap-2 text-sm font-bold text-ink-100 mb-4">
-          <History size={15} className="text-gold-400" /> Histórico de provas e
+          <History size={15} className="text-gold-300" /> Histórico de provas e
           simulados
         </h3>
         {historico.length === 0 ? (

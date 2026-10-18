@@ -117,7 +117,7 @@ export default function UerjHub({ userId, onVoltar, disciplinaInicial = null }) 
       {resumo.respondidas > 0 && (
         <div className="flex items-center gap-6 sm:gap-8 flex-wrap p-4 rounded-2xl bg-ink-900 border border-white/[0.08] shadow-[var(--shadow-card)] mb-8">
           <Indicador valor={resumo.respondidas} rotulo="Respondidas" />
-          <Indicador valor={`${resumo.taxa}%`} rotulo="Acerto" cor="text-gold-400" />
+          <Indicador valor={`${resumo.taxa}%`} rotulo="Acerto" cor="text-gold-300" />
           <Indicador valor={resumo.favoritas} rotulo="Favoritas" />
           <span className="inline-flex items-center gap-1.5 ml-auto text-sm font-bold text-gold-300">
             <Flame size={16} className={resumo.sequencia > 0 ? "" : "opacity-40"} />
@@ -139,7 +139,7 @@ export default function UerjHub({ userId, onVoltar, disciplinaInicial = null }) 
                        shadow-[var(--shadow-card)] transition-all duration-300
                        hover:border-gold-400/30 hover:-translate-y-1 active:scale-[0.98]"
           >
-            <span className="inline-flex w-12 h-12 mb-4 rounded-2xl bg-gold-400/10 border border-gold-400/20 text-gold-400 items-center justify-center transition-transform duration-300 group-hover:scale-105">
+            <span className="inline-flex w-12 h-12 mb-4 rounded-2xl bg-gold-400/10 border border-gold-400/20 text-gold-300 items-center justify-center transition-transform duration-300 group-hover:scale-105">
               <s.icone size={22} strokeWidth={1.9} />
             </span>
             <h3 className="font-display font-black text-white text-lg tracking-tight">

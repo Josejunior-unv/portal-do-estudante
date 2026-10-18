@@ -106,7 +106,7 @@ export default function GerenciarUsuarios() {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Users size={19} className="text-gold-400" /> Usuários cadastrados
+            <Users size={19} className="text-gold-300" /> Usuários cadastrados
           </h2>
           <p className="text-sm text-ink-400 mt-0.5">
             {usuarios.length} conta{usuarios.length === 1 ? "" : "s"} ·{" "}
@@ -177,7 +177,7 @@ export default function GerenciarUsuarios() {
                   <div
                     className={`shrink-0 w-11 h-11 rounded-full flex items-center justify-center font-bold ${
                       ehAdmin
-                        ? "bg-gold-400 text-ink-950"
+                        ? "bg-gold-400 text-sobre-destaque"
                         : "bg-ink-700 text-ink-200"
                     }`}
                   >

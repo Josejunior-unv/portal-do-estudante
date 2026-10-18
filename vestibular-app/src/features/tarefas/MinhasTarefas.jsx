@@ -10,15 +10,16 @@ import {
   PlayCircle,
   Link2,
   Inbox,
+  Paperclip,
 } from "lucide-react";
-import { MATERIAS, TIPOS_MATERIAL, coresDe } from "@/constants/materias";
+import { MATERIAS, TIPOS_MATERIAL, coresDe, siglaDaMateria } from "@/constants/materias";
 import { listarMateriais } from "@/features/materiais/materiaisService";
 import {
   carregarConcluidas,
   definirConcluida,
 } from "@/features/tarefas/tarefasStatusService";
 import { usePersistedState } from "@/hooks/usePersistedState";
-import { Botao, Selo, EstadoVazio, Esqueleto, BarraProgresso, CabecalhoPagina } from "@/components/ui";
+import { Botao, Selo, EstadoVazio, Esqueleto, BarraProgresso, CabecalhoPagina, SeloMateria } from "@/components/ui";
 import { cx } from "@/components/ui/cx";
 import { useAuth } from "@/features/auth/useAuth";
 import { useInsercoesRealtime } from "@/hooks/useInsercoesRealtime";
@@ -37,9 +38,9 @@ const formatarData = (iso) => {
 };
 
 const infoMateria = (nome) =>
-  MATERIAS.find((m) => m.nome === nome) || { nome, icone: "📚", cor: "blue" };
+  MATERIAS.find((m) => m.nome === nome) || { nome, sigla: siglaDaMateria(nome), cor: "blue" };
 const infoTipo = (id) =>
-  TIPOS_MATERIAL.find((t) => t.id === id) || { label: "Material", icone: "📎" };
+  TIPOS_MATERIAL.find((t) => t.id === id) || { label: "Material", icone: Paperclip };
 
 // Ícones estáticos por tipo (fora do render).
 const ICONE_ACAO = { pdf: FileText, video: PlayCircle, link: Link2 };
@@ -179,14 +180,7 @@ export default function MinhasTarefas() {
                       )}
                     />
                     <div className="relative">
-                      <div
-                        className={cx(
-                          "w-13 h-13 p-3 mb-4 inline-flex items-center justify-center rounded-2xl text-2xl transition-transform duration-300 group-hover:scale-110",
-                          c.fundo,
-                        )}
-                      >
-                        {m.icone}
-                      </div>
+                      <SeloMateria sigla={m.sigla} className="mb-4" />
                       <h3 className="font-bold text-white text-lg leading-tight">
                         {m.nome}
                       </h3>
@@ -231,19 +225,11 @@ export default function MinhasTarefas() {
               {(() => {
                 const g = porMateria[materiaAberta];
                 const mat = infoMateria(materiaAberta);
-                const c = coresDe(mat.cor);
                 if (!g) return null;
                 return (
                   <>
                     <div className="flex items-center gap-3 mb-5">
-                      <span
-                        className={cx(
-                          "w-12 h-12 flex items-center justify-center rounded-2xl text-2xl",
-                          c.fundo,
-                        )}
-                      >
-                        {mat.icone}
-                      </span>
+                      <SeloMateria sigla={mat.sigla} />
                       <div>
                         <h3 className="text-xl font-black text-white">
                           {materiaAberta}

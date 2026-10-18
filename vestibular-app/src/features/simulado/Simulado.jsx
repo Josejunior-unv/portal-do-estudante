@@ -25,6 +25,8 @@ import {
   recomendacoes,
 } from "@/features/simulado/simuladosService";
 import { useAuth } from "@/features/auth/useAuth";
+import { Bolha } from "@/components/ui";
+import { cx } from "@/components/ui/cx";
 
 const ANOS = [
   2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011,
@@ -56,12 +58,33 @@ function Chip({ ativo, onClick, children }) {
       onClick={onClick}
       className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all active:scale-95 ${
         ativo
-          ? "bg-gold-400 text-ink-950 border-gold-400 shadow-[var(--shadow-gold)]"
+          ? "bg-gold-400 text-sobre-destaque border-gold-400 shadow-[var(--shadow-gold)]"
           : "bg-ink-800/40 text-ink-300 border-ink-700/60 hover:border-gold-400/40 hover:text-white"
       }`}
     >
       {children}
     </button>
+  );
+}
+
+// Carimbo da nota (como o professor marca a prova corrigida).
+const ESTILO_MEDALHA = {
+  ouro: "bg-gold-400 text-sobre-destaque border-black/10",
+  prata: "border-ink-400 text-ink-200",
+  bronze: "border-orange-300 text-orange-300",
+};
+function Carimbo({ medalha, grande = false }) {
+  if (!medalha) return <span className="text-ink-500">—</span>;
+  return (
+    <span
+      className={cx(
+        "inline-block border-2 rounded-md font-display font-black uppercase tracking-[0.12em] -rotate-2",
+        grande ? "text-3xl px-4 py-1.5" : "text-[10px] px-1.5 py-0.5",
+        ESTILO_MEDALHA[medalha.id],
+      )}
+    >
+      {medalha.nome}
+    </span>
   );
 }
 
@@ -298,13 +321,13 @@ export default function Simulado() {
         </div>
 
         {/* Meta semanal */}
-        <div className="mb-6 p-5 rounded-2xl bg-gradient-to-br from-ink-900 to-ink-900/40 border border-ink-800">
+        <div className="mb-6 p-5 rounded-2xl bg-ink-900 border border-ink-800">
           <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
             <div>
               <h3 className="text-sm font-bold text-ink-200">Meta semanal</h3>
               <p className="text-xs text-ink-500">
                 {progMeta.feitos} de {progMeta.alvo} simulados nesta semana
-                {progMeta.concluida ? " · concluída! 🎉" : ""}
+                {progMeta.concluida ? " · meta cumprida" : ""}
               </p>
             </div>
             <label className="flex items-center gap-2 text-xs text-ink-400">
@@ -449,7 +472,7 @@ export default function Simulado() {
               type="button"
               onClick={iniciarSimulado}
               disabled={carregando}
-              className="w-full bg-gold-400 hover:bg-gold-300 text-ink-950 font-bold py-3.5 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-[0.99] disabled:opacity-60 disabled:cursor-wait"
+              className="w-full bg-gold-400 hover:bg-gold-500 text-sobre-destaque font-bold py-3.5 rounded-xl transition-all shadow-[var(--shadow-gold)] active:scale-[0.99] disabled:opacity-60 disabled:cursor-wait"
             >
               {carregando ? "Preparando questões..." : "Iniciar simulado"}
             </button>
@@ -470,7 +493,7 @@ export default function Simulado() {
                 <p className="text-[10px] uppercase tracking-wider text-ink-500 font-bold">Recorde</p>
               </div>
               <div>
-                <p className="text-2xl font-black text-gold-400">{resumo.mediaPct}%</p>
+                <p className="text-2xl font-black text-gold-300">{resumo.mediaPct}%</p>
                 <p className="text-[10px] uppercase tracking-wider text-ink-500 font-bold">Média</p>
               </div>
             </div>
@@ -478,7 +501,7 @@ export default function Simulado() {
 
           <div className="p-6 rounded-2xl bg-ink-900/60 border border-ink-800">
             <h3 className="flex items-center gap-2 text-sm font-bold text-ink-200 mb-4">
-              <Trophy size={15} className="text-gold-400" /> Ranking pessoal
+              <Trophy size={15} className="text-gold-300" /> Ranking pessoal
             </h3>
             {top.length === 0 ? (
               <p className="text-ink-600 text-sm">Faça um simulado para entrar no ranking.</p>
@@ -488,7 +511,7 @@ export default function Simulado() {
                   <li key={s.id} className="flex items-center justify-between text-sm">
                     <span className="flex items-center gap-2 text-ink-300">
                       <span className="w-5 text-center font-black text-ink-500">{i + 1}º</span>
-                      {medalhaDe(s.pct)?.icone || "•"} {s.pct}%
+                      <Carimbo medalha={medalhaDe(s.pct)} /> {s.pct}%
                     </span>
                     <span className="text-ink-600 text-xs">
                       {s.totalQuestoes} q · {formatarTempo(s.tempoSegundos)}
@@ -510,11 +533,11 @@ export default function Simulado() {
                 title={c.desc}
                 className={`p-3 rounded-xl border text-center transition-all ${
                   c.ok
-                    ? "bg-amber-500/10 border-amber-500/30"
-                    : "bg-ink-900/40 border-ink-800 opacity-50 grayscale"
+                    ? "bg-emerald-400/10 border-emerald-400/30"
+                    : "bg-ink-900/40 border-ink-800 opacity-60"
                 }`}
               >
-                <p className="text-2xl">{c.icone}</p>
+                <Bolha letra={c.ok ? "✓" : ""} estado={c.ok ? "certa" : "vazia"} tamanho="sm" className="mx-auto" />
                 <p className="text-[11px] font-bold text-ink-200 mt-1">{c.nome}</p>
                 <p className="text-[10px] text-ink-500 leading-tight mt-0.5">{c.desc}</p>
               </div>
@@ -547,7 +570,7 @@ export default function Simulado() {
                     className="flex items-center justify-between gap-2 py-2 px-3 rounded-xl bg-ink-900/50 border border-ink-800"
                   >
                     <span className="flex items-center gap-2 min-w-0">
-                      <span className="text-lg">{medalhaDe(s.pct)?.icone || "•"}</span>
+                      <Carimbo medalha={medalhaDe(s.pct)} />
                       <span className="min-w-0">
                         <span className="block text-sm text-ink-200 font-semibold">
                           {s.pct}%{" "}
@@ -580,7 +603,7 @@ export default function Simulado() {
       <div className="max-w-3xl" ref={cardTopoRef}>
         {/* HUD */}
         <div className="sticky top-0 z-20 -mx-2 px-2 pt-2 pb-3 bg-ink-950/90 backdrop-blur-md">
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-ink-900 to-ink-900/40 border border-ink-800">
+          <div className="p-4 rounded-2xl bg-ink-900 border border-ink-800">
             <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
               <span className="text-sm font-black text-white">
                 Questão {indice + 1}
@@ -705,7 +728,7 @@ export default function Simulado() {
             <button
               type="button"
               onClick={proxima}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border border-gold-400 bg-gold-400 text-ink-950 hover:bg-gold-300 shadow-[var(--shadow-gold)] transition active:scale-95"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border border-gold-400 bg-gold-400 text-sobre-destaque hover:bg-gold-500 shadow-[var(--shadow-gold)] transition active:scale-95"
             >
               Próxima →
             </button>
@@ -752,22 +775,22 @@ export default function Simulado() {
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="p-8 rounded-[2rem] bg-gradient-to-br from-ink-900 to-ink-950 border border-ink-800 shadow-2xl text-center mb-6"
+          className="p-8 rounded-2xl bg-ink-900 border border-white/[0.1] text-center mb-6"
         >
           {r.medalhaObj ? (
             <motion.div
               initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }}
-              className="text-7xl mb-2"
+              className="mb-4"
             >
-              {r.medalhaObj.icone}
+              <Carimbo medalha={r.medalhaObj} grande />
             </motion.div>
           ) : (
             <div className="text-6xl mb-2" aria-hidden>—</div>
           )}
 
-          <p className="text-6xl font-black text-gold-400">
+          <p className="text-6xl font-black text-gold-300">
             {r.pct}%
           </p>
           <p className="text-ink-400 mt-1">
@@ -782,7 +805,7 @@ export default function Simulado() {
               transition={{ delay: 0.3 }}
               className="mt-3 inline-block text-sm font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 px-4 py-1.5 rounded-full"
             >
-              🎉 Novo recorde pessoal!
+              Novo recorde pessoal.
             </motion.p>
           )}
           {!c.recorde && c.deltaMedia != null && (
@@ -792,7 +815,7 @@ export default function Simulado() {
             </p>
           )}
           {c.primeiro && (
-            <p className="mt-3 text-sm text-gold-300">Seu primeiro simulado — boa! 🚀</p>
+            <p className="mt-3 text-sm text-gold-300">Seu primeiro simulado concluído.</p>
           )}
         </motion.div>
 
@@ -802,7 +825,7 @@ export default function Simulado() {
             { v: r.acertos, l: "Acertos", c: "text-emerald-400" },
             { v: r.erros, l: "Erros", c: "text-rose-400" },
             { v: r.emBranco, l: "Em branco", c: "text-ink-300" },
-            { v: formatarTempo(r.tempoSegundos), l: "Tempo", c: "text-gold-400" },
+            { v: formatarTempo(r.tempoSegundos), l: "Tempo", c: "text-gold-300" },
           ].map((x) => (
             <div key={x.l} className="p-4 rounded-2xl bg-ink-900/60 border border-ink-800 text-center">
               <p className={`text-2xl font-black ${x.c}`}>{x.v}</p>
@@ -816,7 +839,6 @@ export default function Simulado() {
         {/* Aviso: integração com as Estatísticas */}
         {userId && r.acertos + r.erros > 0 && (
           <div className="flex items-start gap-3 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm mb-6">
-            <span className="text-lg leading-none">📊</span>
             <p className="leading-relaxed">
               <span className="font-semibold">Desempenho registrado nas suas Estatísticas.</span>{" "}
               As {r.acertos + r.erros} questões respondidas já contam no seu
@@ -867,14 +889,14 @@ export default function Simulado() {
             onClick={() => setRevisarQuestoes(true)}
             className="flex-1 min-w-[140px] py-3 rounded-xl text-sm font-bold border border-ink-700 bg-ink-800/50 text-ink-200 hover:border-gold-400/40 transition active:scale-95"
           >
-            🔍 Revisar questões
+            Revisar questões
           </button>
           <button
             type="button"
             onClick={refazer}
-            className="flex-1 min-w-[140px] py-3 rounded-xl text-sm font-bold border border-gold-400 bg-gold-400 text-ink-950 hover:bg-gold-300 transition active:scale-95 shadow-[var(--shadow-gold)]"
+            className="flex-1 min-w-[140px] py-3 rounded-xl text-sm font-bold border border-gold-400 bg-gold-400 text-sobre-destaque hover:bg-gold-500 transition active:scale-95 shadow-[var(--shadow-gold)]"
           >
-            🔁 Refazer igual
+            Refazer o mesmo simulado
           </button>
           <button
             type="button"

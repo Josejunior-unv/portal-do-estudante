@@ -95,7 +95,7 @@ export default function SimuladoUerj({ userId, onVoltar }) {
               className={cx(
                 "px-4 py-2 rounded-xl text-sm font-bold border transition-all active:scale-95 tabular-nums",
                 quantidade === n
-                  ? "bg-gold-400 text-ink-950 border-gold-400 shadow-[var(--shadow-gold)]"
+                  ? "bg-gold-400 text-sobre-destaque border-gold-400 shadow-[var(--shadow-gold)]"
                   : "bg-white/[0.03] text-ink-300 border-white/[0.08] hover:border-gold-400/40",
               )}
             >

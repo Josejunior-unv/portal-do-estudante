@@ -1,56 +1,88 @@
 @import "tailwindcss";
 
 /* ============================================================
-   DESIGN SYSTEM — UERJ Para Todos
-   Dois temas, uma só semântica:
+   DESIGN SYSTEM — UERJ Para Todos (out/2026)
 
-   • ESCURO (padrão) — identidade da logo: tinta (pretos quentes),
-     branco e OURO (o selo "PARA TODOS").
-   • CLARO — branco quente, creme e cinzas quentes, com VINHO /
-     bordô como cor de destaque.
+   O mundo de referência é a própria prova da UERJ: o PAPEL do
+   caderno, o GRAFITE do lápis, o AMARELO marca-texto (a placa
+   "PARA TODOS" da logo), o LARANJA do selo "QUESTÃO NN" e as cores
+   da correção do professor (verde / vermelho de caneta).
 
-   A escala `ink` é sempre lida como "950 = fundo da página …
-   100 = texto principal" e `gold` como "cor da marca". No tema
-   claro a escala ink é INVERTIDA e gold vira vinho — assim todos
-   os componentes se adaptam sem classes por tema. `white` também
-   é semântico: é a cor de primeiro plano máxima de cada tema.
+   Dois temas, uma semântica:
+   • PAPEL (padrão) — fundo branco-frio de caderno, texto grafite.
+   • NOITE — grafite escuro para estudar à noite.
+
+   Escala `ink`: 950 = fundo da página … 100 = texto principal.
+   `white` = primeiro plano máximo do tema. `gold` = o amarelo da
+   marca: -400 é o PREENCHIMENTO (botão, grifo, bolha marcada) e
+   -200/-300 são o tom de TEXTO da marca (âmbar escuro no papel,
+   amarelo na noite). Texto sobre o amarelo: `text-sobre-destaque`
+   (sempre escuro, nos dois temas).
    ============================================================ */
 
 @theme {
-  /* Tipografia: Archivo (display, condensada e pesada como a logo)
-     + Inter (texto corrido e UI). */
-  --font-display: "Archivo", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* Archivo CONDENSADA nos títulos (o cabeçalho "VESTIBULAR ESTADUAL"
+     das provas); Atkinson Hyperlegible Next no texto — desenhada para
+     leitura fácil, boa para enunciados longos; Mono para números,
+     letras de alternativa e gabaritos. */
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  /* Tinta — escala de fundos (quente, sem puxar para o azul) */
-  --color-ink-950: #09090b;
-  --color-ink-900: #101014;
-  --color-ink-850: #14141a;
-  --color-ink-800: #1a1a21;
-  --color-ink-700: #27272f;
-  --color-ink-600: #34343e;
-  --color-ink-500: #4d4d59;
-  --color-ink-400: #74747f;
-  --color-ink-300: #9e9ea9;
-  --color-ink-200: #c7c7d0;
-  --color-ink-100: #e8e8ed;
+  /* PAPEL */
+  --color-ink-950: #f6f7f4;
+  --color-ink-900: #ffffff;
+  --color-ink-850: #f1f3ef;
+  --color-ink-800: #e9ece7;
+  --color-ink-700: #d6dad4;
+  --color-ink-600: #babfb8;
+  --color-ink-500: #8a908a;
+  --color-ink-400: #5f655f;
+  --color-ink-300: #444a45;
+  --color-ink-200: #2c312d;
+  --color-ink-100: #1e2226;
+  --color-white: #121518;
 
-  /* Ouro — o selo da logo */
-  --color-gold-200: #ffedb0;
-  --color-gold-300: #ffdd70;
-  --color-gold-400: #f5c042;
-  --color-gold-500: #e3a81e;
-  --color-gold-600: #bd8a10;
-  --color-gold-700: #8f680c;
+  /* Amarelo marca-texto (preenchimento) + âmbar escuro (texto) */
+  --color-gold-200: #5e4300;
+  --color-gold-300: #775500;
+  --color-gold-400: #ffd43b;
+  --color-gold-500: #f2c11a;
+  --color-gold-600: #c99a00;
+  --color-gold-700: #8f6d00;
+  --color-sobre-destaque: #15181b;
 
-  /* Sombras com a profundidade da marca (o inset dá o brilho de
-     borda superior estilo Linear/Raycast) */
-  --shadow-gold: 0 8px 24px -8px rgb(245 192 66 / 0.35);
-  --shadow-card:
-    inset 0 1px 0 rgb(255 255 255 / 0.04),
-    0 1px 2px rgb(0 0 0 / 0.4),
-    0 10px 28px -14px rgb(0 0 0 / 0.55);
-  --shadow-pop: 0 24px 60px -16px rgb(0 0 0 / 0.65);
+  /* Laranja do selo "QUESTÃO" das provas da UERJ */
+  --color-laranja: #db5a1e;
+
+  /* Correção: verde de acerto e vermelho de caneta */
+  --color-emerald-300: #2f7d4e;
+  --color-emerald-400: #3a9460;
+  --color-rose-300: #c42e25;
+  --color-rose-400: #d8443a;
+  --color-amber-300: #9a5b00;
+  --color-amber-400: #c27700;
+  --color-blue-300: #1d4ed8;
+  --color-blue-400: #2563eb;
+  --color-yellow-300: #8a6400;
+  --color-green-300: #2f7d4e;
+  --color-purple-300: #7e22ce;
+  --color-purple-400: #9333ea;
+  --color-cyan-300: #0e7490;
+  --color-indigo-300: #4338ca;
+  --color-sky-300: #0369a1;
+  --color-orange-300: #c2410c;
+  --color-teal-500: #0d9488;
+
+  /* Cantos mais retos (papel, não "bolha de app") */
+  --radius-xl: 0.625rem;
+  --radius-2xl: 0.75rem;
+  --radius-3xl: 1rem;
+
+  /* Sem brilho: a hierarquia vem de bordas e contraste */
+  --shadow-gold: 0 0 0 0 transparent;
+  --shadow-card: 0 1px 0 rgb(20 24 28 / 0.04);
+  --shadow-pop: 0 18px 48px -18px rgb(20 24 28 / 0.28);
 
   --animate-brilho: brilho 2.4s ease-in-out infinite;
 
@@ -66,87 +98,52 @@
 }
 
 /* ------------------------------------------------------------
-   TEMA CLARO — creme quente + vinho
+   NOITE — grafite
    ------------------------------------------------------------ */
-[data-theme="light"] {
-  /* Escala ink invertida: 950 vira o fundo off-white… */
-  --color-ink-950: #faf5ee;
-  --color-ink-900: #fffdf9;
-  --color-ink-850: #f7f0e7;
-  --color-ink-800: #efe6da;
-  --color-ink-700: #decfc0;
-  --color-ink-600: #c7b3a3;
-  --color-ink-500: #99857a;
-  --color-ink-400: #77655d;
-  --color-ink-300: #5a4a44;
-  --color-ink-200: #41332f;
-  --color-ink-100: #2b1f1d;
-
-  /* …e o "branco" vira o primeiro plano quase-preto (com um
-     toque de vinho, nunca preto puro). */
-  --color-white: #261418;
-
-  /* A marca no claro é o VINHO: gold-400 continua sendo "a cor
-     principal", gold-300/200 os tons de hover/link (mais escuros,
-     porque a escala inverteu junto com o tema). */
-  --color-gold-200: #4e1826;
-  --color-gold-300: #672233;
-  --color-gold-400: #7e2a3a;
-  --color-gold-500: #97404f;
-  --color-gold-600: #b05f6c;
-  --color-gold-700: #ca8b95;
-
-  /* Estados e cores de matéria: tons -300/-400 escurecidos para
-     manter contraste sobre fundo claro. */
-  --color-emerald-300: #047857;
-  --color-emerald-400: #059669;
-  --color-rose-300: #be123c;
-  --color-rose-400: #e11d48;
-  --color-amber-300: #b45309;
-  --color-amber-400: #d97706;
-  --color-blue-300: #1d4ed8;
-  --color-blue-400: #2563eb;
-  --color-yellow-300: #a16207;
-  --color-green-300: #15803d;
-  --color-purple-300: #7e22ce;
-  --color-purple-400: #9333ea;
-  --color-cyan-300: #0e7490;
-  --color-indigo-300: #4338ca;
-  --color-sky-300: #0369a1;
-  --color-orange-300: #c2410c;
-  --color-teal-500: #0d9488;
-
-  /* Sombras suaves e quentes (nada de preto pesado no claro) */
-  --shadow-gold: 0 8px 24px -8px rgb(126 42 58 / 0.35);
-  --shadow-card:
-    0 1px 2px rgb(62 30 30 / 0.05),
-    0 10px 28px -16px rgb(62 30 30 / 0.16);
-  --shadow-pop: 0 24px 60px -20px rgb(62 30 30 / 0.3);
-}
-
-/* Bolsão sempre-escuro: para superfícies que permanecem escuras nos
-   dois temas (ex.: o painel de marca do login, onde a logo preta se
-   funde ao fundo). Reassenta os tokens escuros dentro do subtree. */
+[data-theme="dark"],
 .tema-escuro-fixo {
-  --color-ink-950: #09090b;
-  --color-ink-900: #101014;
-  --color-ink-850: #14141a;
-  --color-ink-800: #1a1a21;
-  --color-ink-700: #27272f;
-  --color-ink-600: #34343e;
-  --color-ink-500: #4d4d59;
-  --color-ink-400: #74747f;
-  --color-ink-300: #9e9ea9;
-  --color-ink-200: #c7c7d0;
-  --color-ink-100: #e8e8ed;
+  --color-ink-950: #121417;
+  --color-ink-900: #1a1d21;
+  --color-ink-850: #1f2327;
+  --color-ink-800: #262a2f;
+  --color-ink-700: #33383e;
+  --color-ink-600: #454b52;
+  --color-ink-500: #646b73;
+  --color-ink-400: #8c939a;
+  --color-ink-300: #b4bac0;
+  --color-ink-200: #d6dade;
+  --color-ink-100: #eceef0;
   --color-white: #ffffff;
-  --color-gold-200: #ffedb0;
-  --color-gold-300: #ffdd70;
-  --color-gold-400: #f5c042;
-  --color-gold-500: #e3a81e;
-  --color-gold-600: #bd8a10;
-  --color-gold-700: #8f680c;
-  --shadow-gold: 0 8px 24px -8px rgb(245 192 66 / 0.35);
+
+  --color-gold-200: #ffe48a;
+  --color-gold-300: #ffd43b;
+  --color-gold-400: #ffd43b;
+  --color-gold-500: #f2c11a;
+  --color-gold-600: #c99a00;
+  --color-gold-700: #8f6d00;
+
+  --color-laranja: #f07a3c;
+
+  --color-emerald-300: #7fd1a0;
+  --color-emerald-400: #4fbf7e;
+  --color-rose-300: #ff9a91;
+  --color-rose-400: #f2675c;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-yellow-300: #fde047;
+  --color-green-300: #86efac;
+  --color-purple-300: #d8b4fe;
+  --color-purple-400: #c084fc;
+  --color-cyan-300: #67e8f9;
+  --color-indigo-300: #a5b4fc;
+  --color-sky-300: #7dd3fc;
+  --color-orange-300: #fdba74;
+  --color-teal-500: #14b8a6;
+
+  --shadow-card: 0 1px 0 rgb(0 0 0 / 0.3);
+  --shadow-pop: 0 24px 60px -16px rgb(0 0 0 / 0.65);
 }
 
 html {
@@ -172,22 +169,26 @@ body {
 /* Seleção de texto com a cor da marca */
 ::selection {
   background: var(--color-gold-400);
-  color: var(--color-ink-950);
+  color: var(--color-sobre-destaque);
 }
 
 /* Foco visível consistente em todo o app */
 :focus-visible {
-  outline: 2px solid var(--color-gold-400);
+  outline: 2px solid var(--color-ink-100);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* Títulos usam a família display por padrão */
+/* Títulos: Archivo condensada, como o cabeçalho das provas */
 h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
+  font-stretch: 82%;
+  letter-spacing: -0.01em;
+}
+.font-display {
+  font-stretch: 82%;
 }
 
 /* Scrollbar discreta e moderna (WebKit) */
@@ -208,8 +209,8 @@ h3 {
   background: rgb(120 120 132 / 0.45);
   background-clip: padding-box;
 }
-[data-theme="light"] *::-webkit-scrollbar-thumb {
-  background: rgb(120 100 90 / 0.3);
+[data-theme="dark"] *::-webkit-scrollbar-thumb {
+  background: rgb(180 186 192 / 0.25);
   background-clip: padding-box;
 }
 
@@ -223,4 +224,26 @@ h3 {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Grifo: marca-texto amarelo na metade de baixo da palavra, como o
+   aluno grifa o caderno. */
+.grifo {
+  color: inherit;
+  background: linear-gradient(
+    transparent 55%,
+    var(--color-gold-400) 55%,
+    var(--color-gold-400) 92%,
+    transparent 92%
+  );
+  padding: 0 0.12em;
+  margin: 0 -0.04em;
+}
+[data-theme="dark"] .grifo {
+  background: linear-gradient(
+    transparent 55%,
+    rgb(255 212 59 / 0.45) 55%,
+    rgb(255 212 59 / 0.45) 92%,
+    transparent 92%
+  );
 }

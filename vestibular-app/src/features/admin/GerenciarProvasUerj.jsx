@@ -71,7 +71,7 @@ function Indicadores({ stats }) {
     <div className="grid grid-cols-3 gap-4 mb-6">
       {itens.map((i) => (
         <Cartao key={i.rotulo} className="p-4">
-          <i.icone size={16} className="text-gold-400 mb-2" />
+          <i.icone size={16} className="text-gold-300 mb-2" />
           <p className="font-display text-2xl font-black text-white tabular-nums leading-none">
             {i.valor}
           </p>
@@ -194,7 +194,7 @@ export default function GerenciarProvasUerj() {
 
       <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <GraduationCap size={19} className="text-gold-400" /> Provas da UERJ
+          <GraduationCap size={19} className="text-gold-300" /> Provas da UERJ
         </h2>
         <Botao
           variante="secundario"
@@ -213,7 +213,7 @@ export default function GerenciarProvasUerj() {
       {/* COMO SINCRONIZAR */}
       <Cartao className="p-5 mb-6">
         <h3 className="flex items-center gap-2 text-sm font-bold text-ink-100 mb-2">
-          <Terminal size={15} className="text-gold-400" /> Sincronizar novas provas
+          <Terminal size={15} className="text-gold-300" /> Sincronizar novas provas
         </h3>
         <p className="text-sm text-ink-400 leading-6">
           A importação roda fora do navegador (o site da UERJ não permite
@@ -342,7 +342,7 @@ python main.py`}
 
       {/* LOGS */}
       <h3 className="flex items-center gap-2 text-sm font-bold text-ink-100 mb-3">
-        <ScrollText size={15} className="text-gold-400" /> Últimos eventos da importação
+        <ScrollText size={15} className="text-gold-300" /> Últimos eventos da importação
       </h3>
       {logs.length === 0 ? (
         <p className="text-sm text-ink-500">

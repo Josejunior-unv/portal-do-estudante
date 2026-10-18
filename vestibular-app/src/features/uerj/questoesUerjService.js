@@ -45,6 +45,26 @@ export async function listarQuestoesUerj(disciplina) {
   return { data: data || [], error };
 }
 
+/**
+ * Anexa a cada questão os seus textos de apoio (`apoios`), buscando todos de
+ * uma vez. Sem a PARTE 14 da migration (tabela ausente), devolve as questões
+ * como estão.
+ */
+export async function anexarApoios(questoes) {
+  const ids = [...new Set(questoes.flatMap((q) => q.apoio_ids || []))];
+  if (!ids.length) return questoes;
+  const { data, error } = await supabase
+    .from("textos_apoio_uerj")
+    .select("id, imagens, texto")
+    .in("id", ids);
+  if (error) return questoes;
+  const porId = new Map(data.map((a) => [a.id, a]));
+  return questoes.map((q) => ({
+    ...q,
+    apoios: (q.apoio_ids || []).map((id) => porId.get(id)).filter(Boolean),
+  }));
+}
+
 /** Adapta uma questão UERJ para o formato que o QuestaoCard consome. */
 export function adaptarParaCard(q) {
   return {
@@ -53,12 +73,21 @@ export function adaptarParaCard(q) {
     origem: "UERJ",
     materiaNome: q.disciplina,
     context: q.enunciado,
-    files: Array.isArray(q.imagens) ? q.imagens : [],
+    // Com o recorte da prova, as figuras antigas (extraídas soltas e às
+    // vezes trocadas) não são mais exibidas.
+    files: q.recorte_url ? [] : Array.isArray(q.imagens) ? q.imagens : [],
     alternatives: (q.alternativas || []).map((a) => ({
       letter: a.letra,
       text: a.texto,
     })),
-    correctAlternative: q.resposta || null,
+    correctAlternative: q.anulada ? null : q.resposta || null,
+    recorte: q.recorte_url || null,
+    apoios: q.apoios || [],
+    anulada: Boolean(q.anulada),
+    discursiva: q.prova?.tipo === "discursivo",
+    pdf: q.prova?.pdf_url || null,
+    pagina: q.pagina || null,
+    textoConfiavel: Boolean(q.texto_confiavel),
   };
 }
 

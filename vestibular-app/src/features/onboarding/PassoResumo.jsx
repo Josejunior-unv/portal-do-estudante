@@ -30,7 +30,7 @@ export default function PassoResumo({ cronograma, onBack, onSaveSuccess }) {
   return (
     <OnboardingLayout
       passo={3}
-      titulo="Seu cronograma está pronto! 🎉"
+      titulo="Seu plano da semana"
       subtitulo="Esta é a divisão ideal de horas por ciclo, calculada a partir da sua rotina e da dificuldade de cada matéria. Você pode ajustar quando quiser."
     >
       {/* Resumo em números */}
@@ -42,7 +42,7 @@ export default function PassoResumo({ cronograma, onBack, onSaveSuccess }) {
           </p>
         </div>
         <div className="bg-ink-900/60 border border-ink-800 rounded-2xl p-4 text-center">
-          <p className="text-3xl font-black text-gold-400">{lista.length}</p>
+          <p className="text-3xl font-black text-gold-300">{lista.length}</p>
           <p className="text-[11px] uppercase tracking-wider text-ink-500 font-bold mt-1">
             Matérias
           </p>
@@ -97,7 +97,7 @@ export default function PassoResumo({ cronograma, onBack, onSaveSuccess }) {
           onClick={salvar}
           disabled={salvando}
           whileTap={{ scale: 0.99 }}
-          className="flex-1 bg-gold-400 hover:bg-gold-300 text-ink-950 font-bold py-3 rounded-xl transition-all shadow-[var(--shadow-gold)] disabled:opacity-60 disabled:cursor-wait"
+          className="flex-1 bg-gold-400 hover:bg-gold-500 text-sobre-destaque font-bold py-3 rounded-xl transition-all shadow-[var(--shadow-gold)] disabled:opacity-60 disabled:cursor-wait"
         >
           {salvando ? "Salvando..." : "Salvar e ir para o painel"}
         </motion.button>

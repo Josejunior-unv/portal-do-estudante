@@ -69,7 +69,7 @@ function RedefinirSenha({ user }) {
         transition={{ duration: 0.45, ease: "easeOut" }}
         className="w-full max-w-sm"
       >
-        <span className="mb-6 w-12 h-12 rounded-2xl bg-gold-400 text-ink-950 flex items-center justify-center shadow-[var(--shadow-gold)]">
+        <span className="mb-6 w-12 h-12 rounded-2xl bg-gold-400 text-sobre-destaque flex items-center justify-center shadow-[var(--shadow-gold)]">
           {concluido ? <CheckCircle2 size={22} strokeWidth={2.5} /> : <KeyRound size={22} strokeWidth={2.5} />}
         </span>
 
